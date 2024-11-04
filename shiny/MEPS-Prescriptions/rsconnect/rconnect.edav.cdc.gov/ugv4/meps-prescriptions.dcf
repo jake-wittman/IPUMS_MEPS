@@ -1,0 +1,12 @@
+name: meps-prescriptions
+title: MEPS-Prescriptions
+username: ugv4
+account: ugv4
+server: rconnect.edav.cdc.gov
+hostUrl: https://rconnect.edav.cdc.gov/__api__
+appId: 1302
+bundleId: 52120
+url: https://rconnect.edav.cdc.gov/content/26bdc701-ebed-4f1c-9f30-6a13e0bb7ab4/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

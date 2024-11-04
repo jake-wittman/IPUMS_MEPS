@@ -1,0 +1,1065 @@
+Description: Adding days of rx
+Samples selected:
+      2000 MEPS
+      2001 MEPS
+      2002 MEPS
+      2003 MEPS
+      2004 MEPS
+      2005 MEPS
+      2006 MEPS
+      2007 MEPS
+      2008 MEPS
+      2009 MEPS
+      2010 MEPS
+      2011 MEPS
+      2012 MEPS
+      2013 MEPS
+      2014 MEPS
+      2015 MEPS
+      2016 MEPS
+      2017 MEPS
+      2018 MEPS
+      2019 MEPS
+      2020 MEPS
+      2021 MEPS
+File Type:                    hierarchical
+Case Selection:               No
+  Variable                         Columns        Len   2000    2001    2002    2003    2004    2005    2006    2007    2008    2009    2010    2011    2012    2013    2014    2015    2016    2017    2018    2019    2020    2021
+  RECTYPE                      P   1              1     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  YEAR                         P   2-5            4     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  SERIAL                       P   6-11           6     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  PERNUM                       P  12-13           2     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  DUID                         P  14-20           7     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  PID                          P  21-23           3     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  MEPSID                       P  24-33          10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  PANEL                        P  34-35           2     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  PSUANN                       P  36-38           3     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  STRATANN                     P  39-46           8     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  PSUPLD                       P  47              1     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  STRATAPLD                    P  48-51           4     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  PANELYR                      P  52-55           4     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RELYR                        P  56              1     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  PERWEIGHT                    P  57-68          12     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  SAQWEIGHT                    P  69-80          12     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  DIABWEIGHT                   P  81-92          12     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  SDOHWT                       P  93-105         13     .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       X
+  AGE                          P 106-108          3     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  SEX                          P 109              1     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RACEA                        P 110-112          3     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  HISPETH                      P 113-114          2     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  HISPYN                       P 115              1     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  USBORN                       P 116-117          2     .       .       X       X       .       .       .       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  EDUC                         P 118-120          3     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  HIDEG                        P 121-122          2     X       X       X       X       X       X       X       X       X       X       X       X       X       .       .       X       X       X       X       X       X       X
+  FTOTINCCPS                   P 123-131          9     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  FTOTINCMEPS                  P 132-140          9     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  INCTOT                       P 141-149          9     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  FTOTVAL                      P 150-156          7     .       .       .       .       .       .       .       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  POVCAT                       P 157              1     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  POVLEV                       P 158-168         11     .       .       .       .       .       .       .       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  POVCATCPS                    P 169-170          2     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  POVCATMEPS                   P 171-172          2     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  HINOTCOV                     P 173-174          2     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  HIPRIVATE                    P 175-176          2     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  HICHAMPANY                   P 177-178          2     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  HIMACHIP                     P 179              1     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  HIMCARE                      P 180              1     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  HIOTHGOVA                    P 181              1     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       .       .       .       .
+  HIOTHGOVB                    P 182              1     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       .       .       .       .
+  COVERTYPE                    P 183              1     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  INSULIN                      P 184              1     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  DIAPILLS                     P 185              1     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  DIARESPOND                   P 186-187          2     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXPRMEDSNO                   P 188-190          3     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  DCSDIABDX                    P 191              1     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RECTYPEM                     M   1              1     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  YEARM                        M   2-5            4     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  SERIALM                      M   6-11           6     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  PERNUMM                      M  12-13           2     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  DUIDM                        M  14-20           7     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  PIDM                         M  21-23           3     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  PANELM                       M  24-25           2     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  DUPERSIDM                    M  26-35          10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  MEPSIDM                      M  36-45          10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  LINKIDM                      M  46-61          16     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       .
+  MEPSLINKIDM                  M  62-77          16     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       .
+  NREFILLS                     M  78-80           3     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RECTYPEF                     F   1              1     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  YEARF                        F   2-5            4     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  SERIALF                      F   6-11           6     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  PERNUMF                      F  12-13           2     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       .
+  DUIDF                        F  14-20           7     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  PIDF                         F  21-23           3     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  PANELF                       F  24-25           2     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  DUPERSIDF                    F  26-35          10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  MEPSIDF                      F  36-45          10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  DRUGID                       F  46-58          13     .       .       .       .       .       .       .       .       .       X       X       X       X       X       X       X       X       X       X       X       X       X
+  MEPSDRUGID                   F  59-71          13     .       .       .       .       .       .       .       .       .       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXRECID                      F  72-90          19     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  MEPSRXRECID                  F  91-113         23     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  LINKIDF                      F 114-129         16     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  MEPSLINKIDF                  F 130-145         16     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXBEGMM                      F 146-147          2     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXBEGYR                      F 148-151          4     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXNAME                       F 152-201         50     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXNDC                        F 202-212         11     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXDAYSUP                     F 213-216          4     .       .       .       .       .       .       .       .       .       .       X       X       X       X       X       X       X       X       X       X       X       X
+  RXFEXPSRC                    F 217              1     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXFEXPSELF                   F 218-227         10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXFEXPMC                     F 228-237         10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXFEXPMA                     F 238-247         10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXFEXPPRI                    F 248-257         10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXFEXPVA                     F 258-267         10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXFEXPTRI                    F 268-277         10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXFEXPOF                     F 278-287         10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXFEXPOL                     F 288-297         10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXFEXPWC                     F 298-307         10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXFEXPOPR                    F 308-317         10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       .       .       .
+  RXFEXPOPU                    F 318-327         10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       .       .       .
+  RXFEXPOS                     F 328-337         10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXFEXPTOT                    F 338-347         10     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  RXDRGNAM                     F 348-407         60     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  MULTC1                       F 408-410          3     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  MULTC1S1                     F 411-413          3     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  MULTC1S1S1                   F 414-416          3     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  MULTC1S1S2                   F 417-419          3     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  MULTC1S2                     F 420-422          3     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  MULTC1S2S1                   F 423-425          3     X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  MULTC1S3                     F 426-428          3     .       .       .       .       .       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+  MULTC1S3S1                   F 429-431          3     .       .       .       .       .       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X       X
+
+Variable Availability Key:
+All Years X - available in this sample
+All Years . - not available in this sample
+
+RECTYPE   Record type
+P         Person
+R         Round
+X         Condition
+D         Dr. visits
+A         Hospital record
+M         Prescribed medicine
+S         X-ray record
+Z         Poison record
+E         Event
+K         Event-medication-round link
+J         Condition-event/refill link
+F         Rx medicines
+
+PANEL               Panel
+00
+01
+02
+03
+04
+05
+06
+07
+08
+09
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+
+PANELYR             Year entered MEPS
+1996                1996
+1997                1997
+1998                1998
+1999                1999
+2000                2000
+2001                2001
+2002                2002
+2003                2003
+2004                2004
+2005                2005
+2006                2006
+2007                2007
+2008                2008
+2009                2009
+2010                2010
+2011                2011
+2012                2012
+2013                2013
+2014                2014
+2015                2015
+2016                2016
+2017                2017
+2018                2018
+2019                2019
+2020                2020
+2021                2021
+
+RELYR               Relative year 1 or 2 in panel
+1                   Relative year 1
+2                   Relative year 2
+3                   Relative year 3
+4                   Relative year 4
+
+SEX                 Sex
+1                   Male
+2                   Female
+7                   Unknown-refused
+8                   Unknown-not ascertained
+9                   Unknown-don't know
+
+RACEA               Main Racial Background (Pre-1997 Revised OMB Standards), self-reported or interviewer reported
+100                 White
+200                 Black/African-American
+300                 Aleut, Alaskan Native, or American Indian
+310                 Alaskan Native or American Indian
+320                 Alaskan Native/Eskimo
+330                 Aleut
+340                 American Indian
+350                 American Indian or Alaskan Native and any other group
+400                 Asian or Pacific Islander
+410                 Asian
+411                 Chinese
+412                 Filipino
+413                 Korean
+414                 Vietnamese
+415                 Japanese
+416                 Asian Indian
+420                 Pacific Islander
+421                 Hawaiian
+422                 Samoan
+423                 Guamanian
+430                 Other Asian or Pacific Islander
+431                 Other Asian or Pacific Islander (1992-1995)
+432                 Other Asian or Pacific Islander (1996)
+433                 Other Asian or Pacific Islander (1997-1998)
+434                 Other Asian (1999 forward)
+500                 Other Race
+510                 Other Race (1963-1977)
+520                 Other Race (1978)
+530                 Other Race (1979-1991)
+540                 Other Race (1992-1995)
+550                 Other Race (1996)
+560                 Other Race (1997-1998)
+570                 Other Race (1999-2002)
+580                 Primary Race not releasable
+600                 Multiple Race, No Primary Race Selected
+610                 Multiple Race, including Asian, excluding Black and White
+611                 Multiple Race, including Asian and Black, excluding White
+612                 Multiple Race, including Asian and White, excluding Black
+613                 Multiple Race, including Black, excluding Asian and White
+614                 Multiple Race, including Black and White, excluding Asian
+615                 Multiple Race, including White, excluding Asian and Black
+616                 Multiple Race, including Asian, White, and Black
+617                 Multiple Race, excluding Asian, White, and Black
+900                 Unknown
+970                 Unknown-refused
+980                 Unknown-not ascertained
+990                 Unknown (1997 forward: Don't know)
+
+HISPETH             Hispanic ethnicity
+10                  Not Hispanic/Spanish origin
+20                  Mexican
+21                  Mexican-Mexicano
+22                  Mexicano
+23                  Mexican-American
+24                  Chicano
+30                  Puerto Rican
+40                  Cuban/Cuban American
+50                  Dominican (Republic)
+60                  Other Hispanic
+61                  Central or South American
+62                  Other Latin American, type not specified
+63                  Other Spanish
+64                  Hispanic/Latino/Spanish, non-specific type
+65                  Hispanic/Latino/Spanish, type refused
+66                  Hispanic/Latino/Spanish, type not ascertained
+67                  Hispanic/Spanish, type don't know
+70                  Multiple Hispanic
+90                  Unknown
+91                  Unknown if Hispanic/Spanish origin
+92                  Two origins, unknown which is the main
+93                  Origin unknown, refused or not reported
+99                  NIU
+
+HISPYN              Hispanic ethnicity, dichotomous
+1                   No, not of Hispanic ethnicity
+2                   Yes, of Hispanic ethnicity
+
+USBORN              Born in the United States
+10                  No
+11                  No, born in U.S. territory
+12                  No, born outside U.S. and U.S. territories
+20                  Yes, born in U.S.
+96                  NIU
+97                  Unknown-refused
+98                  Unknown-not ascertained
+99                  Unknown-don't know
+
+EDUC                Educational attainment
+000                 NIU
+100                 Grade 12 or less, no high school diploma or equivalent
+101                 Grade 8 or less (no further detail)
+102                 Never attended/kindergarten only
+103                 Grades 1-11 (no further detail)
+104                 Grade 1
+105                 Grade 2
+106                 Grade 3
+107                 Grade 4
+108                 Grade 5
+109                 Grade 6
+110                 Grade 7
+111                 Grade 8
+112                 Grade 9-12, no diploma (no further detail)
+113                 Grade 9
+114                 Grade 10
+115                 Grade 11
+116                 12th grade, no diploma
+200                 High school diploma or GED
+201                 High school graduate
+202                 GED or equivalent
+300                 Some college, no 4yr degree
+301                 Some college, no degree
+302                 AA degree: technical/vocational/occupational
+303                 AA degree: academic program
+400                 Bachelor's degree (BA,AB,BS,BBA)
+500                 Master's, Professional, or Doctoral Degree
+501                 Master's degree (MA,MS,Med,MBA)
+502                 Professional (MD,DDS,DVM,JD)
+503                 Doctoral degree (PhD, EdD)
+504                 Other degree
+505                 Professional School or Doctoral degree, topcoded (MD, DDS, DVM, JD, PhD, EdD)
+996                 No degree, years of education unknown
+997                 Unknown--refused
+998                 Unknown--not ascertained
+999                 Unknown--don't know
+
+HIDEG               Highest degree completed
+10                  No degree
+20                  GED
+30                  High school diploma
+40                  Bachelor's degree
+51                  Master's degree
+52                  Doctorate degree
+53                  Other degree
+96                  NIU
+97                  Unknown--refused
+98                  Unknown--not ascertained
+99                  Unknown--don't know
+
+POVCAT              CPS family income as a percentage of the poverty line, original data, categorical
+1                   Negative or poor (<100% of poverty line)
+2                   Near poor (100-124% of poverty line)
+3                   Low income (125-199% of poverty line)
+4                   Middle income (200-399% of poverty line)
+5                   High income (>=400% of poverty line)
+
+POVCATCPS           CPS family income as a percentage of the poverty line, IPUMS MEPS constructed, categorical
+01                  Under 0.50
+02                  0.50-0.74
+03                  0.75-0.99
+04                  1.00-1.24
+05                  1.25-1.49
+06                  1.50-1.74
+07                  1.75-1.99
+08                  2.00-2.49
+09                  2.50-2.99
+10                  3.00-3.49
+11                  3.50-3.99
+12                  4.00-4.49
+13                  4.50-4.99
+14                  5.00 and over
+
+POVCATMEPS          MEPS family income as a percentage of the poverty line, IPUMS MEPS constructed, categorical
+01                  Under 0.50
+02                  0.50-0.74
+03                  0.75-0.99
+04                  1.00-1.24
+05                  1.25-1.49
+06                  1.50-1.74
+07                  1.75-1.99
+08                  2.00-2.49
+09                  2.50-2.99
+10                  3.00-3.49
+11                  3.50-3.99
+12                  4.00-4.49
+13                  4.50-4.99
+14                  5.00 and over
+
+HINOTCOV            Has no health insurance (excluding single service plans)
+00                  NIU
+01                  No, has coverage
+02                  Yes, has no coverage
+09                  Unknown/refused
+
+HIPRIVATE           Has any private health insurance
+01                  No
+02                  Yes
+
+HICHAMPANY          Has CHAMPUS, TRICARE, or CHAMP-VA insurance
+01                  Not mentioned
+02                  Mentioned
+
+HIMACHIP            Covered by Medicaid and/or SCHIP
+1                   No
+2                   Yes
+
+HIMCARE             Has Medicare insurance
+1                   Not mentioned or No
+2                   Mentioned or Yes
+
+HIOTHGOVA           Covered by other public hospital/physician managed care health insurance
+1                   No
+2                   Yes
+
+HIOTHGOVB           Covered by other public hospital/physician non-managed care health insurance
+1                   No
+2                   Yes
+
+COVERTYPE           Health insurance coverage type (hierarchy)
+0                   NIU
+1                   Private
+2                   Medicaid and other public
+3                   Other coverage
+4                   Uninsured
+5                   Don't know
+
+INSULIN             Now taking insulin
+0                   NIU
+1                   No
+2                   Yes
+7                   Unknown-refused
+8                   Unknown-not ascertained
+9                   Unknown-don't know
+
+DIAPILLS            Now taking diabetic pills
+0                   NIU
+1                   No
+2                   Yes
+7                   Unknown-refused
+8                   Unknown-not ascertained
+9                   Unknown-don't know
+
+DIARESPOND          Respondent status for diabetes supplement
+00                  NIU
+10                  Self
+20                  Proxy
+30                  Dummy record
+90                  Unknown
+97                  Unknown-refused
+98                  Unknown-not ascertained
+99                  Uknown-don't know
+
+DCSDIABDX           Respondent has been told they have diabetes
+0                   NIU
+1                   No
+2                   Yes
+7                   Unknown-refused
+8                   Unknown-not ascertained
+9                   Unknown-don't know
+
+PANELM              Panel, medication-round record
+01                  1
+02                  2
+03                  3
+04                  4
+05                  5
+06                  6
+07                  7
+08                  8
+09                  9
+10                  10
+11                  11
+12                  12
+13                  13
+14                  14
+15                  15
+16                  16
+17                  17
+18                  18
+19                  19
+20                  20
+21                  21
+22                  22
+23                  23
+24                  24
+25                  25
+26                  26
+
+YEARF               Survey year
+1996                1996
+1997                1997
+1998                1998
+1999                1999
+2000                2000
+2001                2001
+2002                2002
+2003                2003
+2004                2004
+2005                2005
+2006                2006
+2007                2007
+2008                2008
+2009                2009
+2010                2010
+2011                2011
+2012                2012
+2013                2013
+2014                2014
+2015                2015
+2016                2016
+2017                2017
+2018                2018
+2019                2019
+2020                2020
+2021                2021
+
+PANELF              Panel, medication-round fill record
+01                  1
+02                  2
+03                  3
+04                  4
+05                  5
+06                  6
+07                  7
+08                  8
+09                  9
+10                  10
+11                  11
+12                  12
+13                  13
+14                  14
+15                  15
+16                  16
+17                  17
+18                  18
+19                  19
+20                  20
+21                  21
+22                  22
+23                  23
+24                  24
+25                  25
+26                  26
+
+RXBEGMM             Month started taking medicine
+00                  NIU
+01                  January
+02                  February
+03                  March
+04                  April
+05                  May
+06                  June
+07                  July
+08                  August
+09                  September
+10                  October
+11                  November
+12                  December
+97                  Unknown-Refused
+98                  Unknown-Not Ascertained
+99                  Unknown-Don't Know
+
+MULTC1              Multum lexicon therapeutic class 1
+000                 NIU
+998                 Unknown - Not Ascertained
+001                 Anti-Infectives
+019                 Antihyperlipidemic Agents
+020                 Antineoplastics
+028                 Biologicals
+040                 Cardiovascular Agents
+057                 Central Nervous System Agents
+081                 Coagulation Modifiers
+087                 Gastrointestinal Agents
+097                 Hormones/Hormone Modifiers
+105                 Miscellaneous Agents
+112                 Radiocontrast Agents
+113                 Genitourinary Tract Agents
+115                 Nutritional Products
+122                 Respiratory Agents
+133                 Topical Agents
+218                 Alternative Medicines
+242                 Psychotherapeutic Agents
+254                 Immunologic Agents
+358                 Metabolic Agents
+
+MULTC1S1            Multum lexicon therapeutic class 1, sub-class 1
+000                 NIU
+998                 Unknown - Not Ascertained
+002                 Amebicides
+003                 Anthelmintics
+004                 Antifungals
+005                 Antimalarial Agents
+006                 Antituberculosis Agents
+007                 Antiviral Agents
+008                 Carbapenems
+009                 Cephalosporins
+010                 Leprostatics
+011                 Macrolide Derivatives
+012                 Miscellaneous Antibiotics
+013                 Penicillins
+014                 Quinolones
+015                 Sulfonamides
+016                 Tetracyclines
+017                 Urinary Anti-Infectives
+018                 Aminoglycosides
+019                 Antihyperlipidemic Agents
+021                 Alkylating Agents
+022                 Antineoplastic Antibiotics
+023                 Antimetabolites
+024                 Antineoplastic Hormones
+025                 Miscellaneous Antineoplastics
+026                 Mitotic Inhibitors
+031                 Bacterial Vaccines
+032                 Colony Stimulating Factors
+033                 Immune Globulins
+034                 In Vivo Diagnostic Biologicals
+036                 Erythropoiesis-Stimulating Agents
+037                 Toxoids
+038                 Viral Vaccines
+039                 Miscellaneous biologicals
+041                 Agents for Hypertensive Emergencies
+042                 Angiotensin Converting Enzyme Inhibitors
+043                 Antiadrenergic Agents, Peripherally Acting
+044                 Antiadrenergic Agents, Centrally Acting
+045                 Antianginal Agents
+046                 Antiarrhythmic Agents
+047                 Beta-Adrenergic Blocking Agents
+048                 Calcium Channel Blocking Agents
+049                 Diuretics
+050                 Inotropic Agents
+051                 Miscellaneous Cardiovascular Agents
+052                 Peripheral Vasodilators
+053                 Vasodilators
+054                 Vasopressors
+055                 Antihypertensive Combinations
+056                 Angiotensin II Inhibitors
+058                 Analgesics
+064                 Anticonvulsants
+065                 Antiemetic/Antivertigo Agents
+066                 Antiparkinson Agents
+067                 Anxiolytics, Sedatives, and Hypnotics
+071                 CNS Stimulants
+072                 General Anesthetics
+073                 Muscle Relaxants
+080                 Misc Central Nervous System Agents
+082                 Anticoagulants
+083                 Antiplatelet Agents
+085                 Misc. Coagulation Modifiers
+088                 Antacids
+089                 Anticholinergics/Antispasmodics
+090                 Antidiarrheals
+091                 Digestive Enzymes
+092                 Gallstone Solubilizing Agents
+093                 Gi Stimulants
+094                 H2 Antagonists
+095                 Laxatives
+096                 Miscellaneous Gi Agents
+098                 Adrenal Cortical Steroids
+099                 Antidiabetic Agents
+100                 Miscellaneous Hormones
+101                 Sex Hormones
+103                 Thyroid Hormones
+104                 Immunosuppressive Agents
+106                 Antidotes
+107                 Chelating Agents
+108                 Cholinergic Muscle Stimulants
+109                 Local Injectable Anesthetics
+110                 Miscellaneous Uncategorized Agents
+111                 Psoralens
+113                 Genitourinary Tract Agents
+116                 Iron Products
+117                 Minerals and Electrolytes
+119                 Vitamins
+120                 Vitamin and Mineral Combinations
+121                 Intravenous Nutritional Products
+123                 Antihistamines
+124                 Antitussives
+125                 Bronchodilators
+127                 Decongestants
+128                 Expectorants
+129                 Miscellaneous Respiratory Agents
+130                 Respiratory Inhalant Products
+131                 Antiasthmatic Combinations
+132                 Upper Respiratory Combinations
+134                 Anorectal Preparations
+135                 Antiseptic and Germicides
+136                 Dermatological Agents
+137                 Topical Anti-Infectives
+146                 Mouth and Throat Products
+147                 Ophthalmic Preparations
+148                 Otic Preparations
+150                 Sterile Irrigating Solutions
+151                 Vaginal Preparations
+173                 Hmg-Coa Reductase Inhibitors
+174                 Miscellaneous Antihyperlipidemic Agents
+192                 Antirheumatics
+194                 Antigout Agents
+217                 Bisphosphonates
+219                 Nutraceutical Products
+220                 Herbal Products
+240                 Lincomycin Derivatives
+241                 Fibric Acid Derivatives
+243                 Leukotriene Modifiers
+247                 Nasal Preparations
+249                 Antidepressants
+251                 Antipsychotics
+252                 Bile Acid Sequestrants
+253                 Anorexiants
+256                 Interferons
+257                 Immunosuppressive Monoclonal Antibodies
+263                 Impotence Agents
+264                 Urinary Antispasmodics
+265                 Urinary Ph Modifiers
+266                 Miscellaneous Genitourinary Tract Agents
+270                 Antipsoriatics
+272                 Proton Pump Inhibitors
+277                 5-Aminosalicylates
+284                 Viscosupplementation Agents
+288                 5-Alpha-reductase inhibitors
+289                 Antihyperuricemic Agents
+293                 Glucose elevating agents
+295                 Growth Hormones
+303                 Agents for pulmonary hypertension
+312                 Cholinergic Agonists
+313                 Cholinesterase Inhibitors
+316                 Cholesterol Absorption Inhibitors
+317                 Antihyperlipidemic Combinations
+320                 Smoking Cessation Agents
+323                 Antineoplastic Monoclonal Antibodies
+324                 Antineoplastic Interferons
+340                 Aldosterone Receptor Antagonists
+342                 Renin Inhibitors
+343                 Tyrosine Kinase Inhibitors
+354                 H. Pylori Eradication Agents
+355                 Functional Bowel Disorder Agents
+359                 Peripherally Acting Antiobesity Agents
+363                 Probiotics
+372                 Amylin Analogs
+373                 Incretin Mimetics
+377                 Prolactin Inhibitors
+378                 Drugs Used in Alcohol Dependence
+397                 Multikinase Inhibitors
+398                 BCR-ABL Tyrosine Kinase Inhibitors
+401                 CD20 Monoclonal Antibodies
+402                 VEGF/VEGFR Inhibitors
+403                 MTOR Inhibitors
+404                 EGFR Inhibitors
+405                 HER2 Inhibitors
+406                 Glycopeptide Antibiotics
+408                 Histone Deacetylase Inhibitors
+409                 Bone Resorption Inhibitors
+411                 Calcitonin
+412                 Uterotonic Agents
+413                 Antigonadotropic Agents
+414                 Antidiuretic Hormones
+418                 Parathyroid Hormone and Analogs
+419                 Gonadotropin-Releasing Hormone Antogonist
+422                 Antithyroid Agents
+426                 Synthetic Ovulation Stimulants
+427                 Tocolytic Agents
+430                 Anticholinergic Chronotropic Agents
+435                 Selective Phosphodiesterase-4 Inhibitors
+437                 Immunostimulants
+460                 Phosphate Binders
+482                 Angiotensin Receptor Blockers and Neprilysin Inhibitors
+488                 Anticoagulant Reversal Agents
+495                 Calcimimetics
+504                 Antimanic Agents
+516                 Noradrenergic Uptake Inhibitors for ADHD
+
+MULTC1S1S1          Multum lexicon therapeutic class 1, sub-class 1, sub-sub-class 1
+000                 NIU
+998                 Unknown - Not Ascertained
+031                 Bacterial Vaccines
+032                 Colony Stimulating Factors
+038                 Viral Vaccines
+059                 Miscellaneous Analgesics
+060                 Narcotic Analgesics
+061                 Nonsteroidal Anti-Inflammatory Agents
+062                 Salicylates
+063                 Analgesics Combinations
+068                 Barbituates
+069                 Benzodiazepines
+070                 Miscellaneous Anxiolytics, Sedatives and Hypnotics
+076                 Miscellaneous Antidepressants
+077                 Miscellaneous Antipsychotic Agents
+079                 Psychotherapeutic Combinations
+089                 Anticholinergics/Antispasmodics
+102                 Contraceptives
+126                 Methylxanthines
+137                 Topical Anti-Infectives
+138                 Topical Steroids
+139                 Topical Anesthetics
+140                 Miscellaneous Topical Agents
+141                 Topical Steroids With Anti-Infectives
+143                 Topical Acne Agents
+144                 Topical Antipsoriatics
+148                 Otic Preparations
+149                 Spermicides
+154                 Loop Diuretics
+155                 Potassium-Sparing Diuretics
+156                 Thiazide Diuretics
+157                 Carbonic Anhydrase Inhibitors
+158                 Miscellaneous Diuretics
+159                 First Generation Cephalosporins
+160                 Second Generation Cephalosporins
+161                 Third Generation Cephalosporins
+163                 Ophthalmic Anti-Infectives
+164                 Ophthalmic Glaucoma Agents
+165                 Ophthalmic Steroids
+166                 Ophthalmic Steroids With Anti-Infectives
+167                 Ophthalmic Anti-Inflammatory Agents
+168                 Ophthalmic Lubricants and Irrigations
+169                 Miscellaneous Ophthalmic Agents
+170                 Otic Anti-Infectives
+171                 Otic Steroids With Anti-Infectives
+172                 Miscellaneous Otic Agents
+173                 Hmg-Coa Reductase Inhibitors
+174                 Miscellaneous Antihyperlipidemic Agents
+175                 Protease Inhibitors
+176                 NRTIs
+177                 Miscellaneous Antivirals
+178                 Skeletal Muscle Relaxants
+179                 Skeletal Muscle Relaxant Combinations
+180                 Adrenergic Bronchodilators
+181                 Bronchodilator Combinations
+182                 Androgens and Anabolic Steroids
+183                 Estrogens
+184                 Gonadotropins
+185                 Progestins
+186                 Sex Hormone Combinations
+187                 Miscellaneous Sex Hormones
+191                 Narcotic Analgesic Combinations
+193                 Antimigraine Agents
+195                 Ht Receptor Antagonists
+196                 Phenothiazine Antiemetics
+197                 Anticholinergic Antiemetics
+198                 Miscellaneous Antiemetics
+199                 Hydantoin Anticonvulsants
+200                 Succinimide Anticonvulsants
+201                 Barbiturate Anticonvulsants
+203                 Benzodiazepine Anticonvulsants
+204                 Miscellaneous Anticonvulsants
+205                 Anticholinergic Antiparkinson Agents
+208                 Ssri Antidepressants
+209                 Tricyclic Antidepressants
+210                 Phenothiazine Antipsychotics
+211                 Platelet Aggregation Inhibitors
+213                 Sulfonylureas
+214                 Biguanides
+215                 Insulin
+216                 Alpha-Glucosidase Inhibitors
+217                 Bisphosphonates
+222                 Penicillinase Resistant Penicillins
+223                 Antipseudomonal Penicillins
+224                 Aminopenicillins
+225                 Beta-Lactamase Inhibitors
+226                 Natural Penicillins
+227                 NNRTIs
+228                 Adamantane Antivirals
+229                 Purine Nucleosides
+231                 Thiocarbamide Derivatives
+232                 Rifamycin Derivatives
+234                 Miscellaneous Antituberculosis Agents
+235                 Polyenes
+236                 Azole Antifungals
+237                 Miscellaneous Antifungals
+238                 Antimalarial Quinolines
+239                 Miscellaneous Antimalarials
+241                 Fibric Acid Derivatives
+244                 Nasal Lubricants and Irrigations
+245                 Nasal Steroids
+246                 Nasal Antihistamines and Decongestants
+248                 Topical Emollients
+250                 Monoamine Oxidase Inhibitors
+252                 Bile Acid Sequestrants
+256                 Interferons
+261                 Heparins
+262                 Coumarins and Indandiones
+263                 Impotence Agents
+264                 Urinary Antispasmodics
+265                 Urinary Ph Modifiers
+266                 Miscellaneous Genitourinary Tract Agents
+267                 Ophthalmic Antihistamines, Decongestants
+268                 Vaginal Anti-Infectives
+269                 Miscellaneous Vaginal Agents
+271                 Thiazolidinediones
+274                 Cardioselective Beta Blockers
+275                 Non-Cardioselective Beta Blockers
+276                 Dopaminergic Antiparkinsonism Agents
+278                 Cox- Inhibitors
+280                 Thioxanthenes
+281                 Neuraminidase Inhibitors
+282                 Meglitinides
+283                 Thrombin Inhibitors
+285                 Factor XA Inhibitors
+286                 Mydriatics
+287                 Opthalmic Anesthetics
+288                 5-Alpha-Reductase Inhibitors
+290                 Topical Antibiotics
+291                 Topical Antivirals
+292                 Topical Antifungals
+296                 Inhaled Corticosteroids
+297                 Mucolytics
+298                 Mast Cell Stabilizers
+299                 Anticholinergic Bronchodilators
+301                 Glucocorticoids
+302                 Mineralocorticoids
+304                 Macrolides
+305                 Ketolides
+306                 Phenylpiperazine Antidepressants
+307                 Tetracyclic Antidepressants
+308                 Ssnri Antidepressants
+309                 Miscellaneous Antidiabetic Agents
+311                 Dibenzazepine Anticonvulsants
+314                 Antidiabetic Combinations
+316                 Cholesterol Absorption Inhibitors
+317                 Antihyperlipidemic Combinations
+321                 Opthalmic Diagnostic Agents
+327                 Antiviral Combinations
+328                 Antimalarial Combinations
+330                 Antiviral Interferons
+341                 Atypical Antipsychotics
+345                 Fatty Acid Derivative Anticonvulsants
+346                 Gamma-Aminobutyric Acide Reuptake Inhibitors
+347                 Gamma-Aminobutyric Acid Analogs
+348                 Triazine Anticonvulsants
+349                 Carbamate Anticonvulsants
+350                 Pyrrolidine Anticonvulsants
+351                 Carbonic Anhydrase Inhibitor Anticonvulsants
+356                 Serotoninergic Neuroenteric Modulators
+362                 Chloride Channel Activators
+366                 Integrase Strand Transfer Inhibitor
+370                 Otic Steroids
+371                 Dipeptidyl Peptidase 4 Inhibitors
+372                 Amylin Analogs
+373                 Incretin Mimetics
+380                 Topical Debriding Agents
+381                 Topical Depigmenting Agents
+382                 Topical Antihistamines
+385                 Group I Antiarrhythmics
+386                 Group II Antiarrhythmics
+387                 Group III Antiarrhythmics
+388                 Group IV Antiarrhythmics
+389                 Group V Antiarrhythmics
+392                 Otic Anesthetics
+393                 Cerumenolytics
+394                 Topical Astringents
+395                 Topical Keratolytics
+415                 Miscellaneous Bone Resorption Inhibitors
+432                 Vaccine Combinations
+439                 Other Immunostimulants
+441                 Calcineurin Inhibitors
+442                 TNF Alfa Inhibitors
+444                 Selective Immunosuppressants
+445                 Other Immunosuppressants
+457                 Hydrazide Derivatives
+448                 Topical Non-Steroidal Anti-Inflammatories
+450                 Topical Antineoplastics
+453                 Topical Rubefacient
+455                 Guanylate Cyclase-C Agonists
+458                 SGLT-2  Inhibitors
+461                 Topical Anti-Rosacea Agents
+467                 Ace Inhibitors With Thiazides
+470                 Miscellaneous Antihypertensive Combinations
+472                 Beta Blockers With Thiazides
+473                 Angiotensin II Inhibitors With Thiazides
+475                 Potassium Sparing Diuretics With Thiazides
+476                 ACE Inhibitors With Calcium Channel Blocking Agents
+479                 Angiotensin II Inhibitors With Calcium Channel Blockers
+484                 PCSK9  Inhibitors
+502                 CGRP Inhibitors
+
+MULTC1S1S2          Multum lexicon therapeutic class 1, sub-class 1, sub-sub-class 2
+000                 NIU
+062                 Salicylates
+140                 Miscellaneous Topical Agents
+143                 Topical Acne Agents
+144                 Topical Antipsoriatics
+185                 Progestins
+186                 Sex Hormone Combinations
+187                 Miscellaneous Sex Hormones
+246                 Nasal Antihistamines And Decongestants
+248                 Topical Emollients
+271                 Thiazolidinediones
+286                 Mydriatics
+290                 Topical Antibiotics
+395                 Topical Keratolytics
+450                 Topical Antineoplastics
+461                 Topical Anti-Rosacea Agents
+
+MULTC1S2            Multum lexicon therapeutic class 1, sub-class 2
+000                 NIU
+998                 Unknown - Not Ascertained
+005                 Antimalarial Agents
+012                 Miscellaneous Antibiotics
+015                 Sulfonamides
+016                 Tetracyclines
+017                 Urinary Anti-Infectives
+018                 Aminoglycosides
+047                 Beta-Adrenergic Blocking Agents
+048                 Calcium Channel Blocking Agents
+050                 Inotropic Agents
+053                 Vasodilators
+065                 Antiemetic/Antivertigo Agents
+066                 Antiparkinson Agents
+067                 Anxiolytics, Sedatives, and Hypnotics
+073                 Muscle Relaxants
+085                 Misc. Coagulation Modifiers
+086                 Thrombolytics
+087                 Gastrointestinal Agents
+088                 Antacids
+089                 Anticholinergics/Antispasmodics
+090                 Antidiarrheals
+091                 Digestive Enzymes
+092                 Gallstone Solubilizing Agents
+093                 Gi Stimulants
+094                 H2 Antagonists
+095                 Laxatives
+113                 Genitourinary Tract Agents
+120                 Vitamin and Mineral Combinations
+136                 Dermatological Agents
+146                 Mouth and Throat Products
+151                 Vaginal Preparations
+249                 Antidepressants
+253                 Anorexiants
+289                 Antihyperuricemic Agents
+340                 Aldosterone Receptor Antagonists
+402                 VEGF/VEGFR Inhibitors
+433                 Catecholamines
+
+MULTC1S2S1          Multum lexicon therapeutic class 1, sub-class 2, sub-sub-class 1
+000                 NIU
+998                 Unknown - Not Ascertained
+068                 Barbituates
+069                 Benzodiazepines
+137                 Topical Anti-Infectives
+179                 Skeletal Muscle Relaxant Combinations
+198                 Miscellaneous Antiemetics
+205                 Anticholinergic Antiparkinson Agents
+209                 Tricyclic Antidepressants
+238                 Antimalarial Quinolines
+266                 Miscellaneous Genitourinary Tract Agents
+268                 Vaginal Anti-Infectives
+274                 Cardioselective Beta Blockers
+275                 Non-Cardioselective Beta Blockers
+
+MULTC1S3            Multum lexicon therapeutic class 1, sub-class 3
+000                 NIU
+998                 Unknown - Not Ascertained
+067                 Anxiolytics, Sedatives, and Hypnotics
+
+MULTC1S3S1          Multum lexicon therapeutic class 1, sub-class 3, sub-sub-class 1
+000                 NIU
+069                 Benzodiazepines
+070                 Misc. Anxiolytics, Sedatives and Hypnotics
+
