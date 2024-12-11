@@ -2586,7 +2586,7 @@ tar_target(
             'High school',
             'Greater than high school',
             'Poor (<100% of poverty line)',
-            'Low income (100% - 200% of poverty line)',
+            'Low income (100% - <200% of poverty line)',
             'Middle income (200% - 399% of poverty line)',
             'High income (>= 400% of poverty line)',
             'Public only',
@@ -2683,7 +2683,7 @@ tar_target(
                                               'High school',
                                               'Greater than high school',
                                               'Poor (<100% of poverty line)',
-                                              'Low income (100% - 200% of poverty line)',
+                                              'Low income (100% - <200% of poverty line)',
                                               'Middle income (200% - 399% of poverty line)',
                                               'High income (>= 400% of poverty line)',
                                               'Public only', 'Any private', 'Uninsured',
@@ -2693,9 +2693,11 @@ tar_target(
       arrange( stratifier, group, insulin_indicator) |>
       select(-SEX, -RACETHNX, -HIDEG, -AGE_7cat, -COVERTYPE, -POVCAT, -Copay_6cat, -insulin_indicator,
              -AGE_iqviacat_not_insulin,
-             -SE.1, -LL.1, -UL.1, -deff, -df) |>
+             -SE.1, PercentLL = LL.1, PercentUL = UL.1, -deff, -df) |>
       rename(Prescription = Level, `Relative CI Width` = rel_ci, `Effective n` = n_eff) |>
-      mutate(across(c(Number, SE, LL, HL), ~round(.x, digits = -3))) |>
+      mutate(across(c(Number, SE, LL, HL), ~round(.x, digits = -3)),
+             PercentLL = PercentLL * 100,
+             PercentUL = PercentUL * 100) |>
       mutate(across(where(is.numeric), ~formatC(.x, format = 'd', big.mark = ','))) |>
       mutate(Number = paste0(Number, " (", Percent, ")")) |>
       select(-Percent)
@@ -2839,7 +2841,7 @@ tar_target(
                                                        'High school',
                                                        'Greater than high school',
                                                        'Poor (<100% of poverty line)',
-                                                       'Low income (100% - 200% of poverty line)',
+                                                       'Low income (100% - <200% of poverty line)',
                                                        'Middle income (200% - 399% of poverty line)',
                                                        'High income (>= 400% of poverty line)',
                                                        'Public only', 'Any private', 'Uninsured',
@@ -2983,6 +2985,7 @@ tar_target(
 
   tar_target(compare_insulins_gt,
            comparisons_table_prep |>
+             mutate(across(everything(), ~if_else(.x == 'N/A', NA, .x))) |>
              rename_with(~gsub('IQVIA', 'NPA', .x)) |>
              select(stratifier, group, contains('/'), contains('Pre-mixed'), contains('All')) |>
              select(-contains('Unknown')) |>
@@ -2995,24 +2998,47 @@ tar_target(
                  cell_text(align = 'right')
                ),
                locations = cells_body(
-                 columns = 2:13
+                 columns = 2:ncol(comparisons_table_prep |>
+                                    rename_with(~gsub('IQVIA', 'NPA', .x)) |>
+                                    select(stratifier, group, contains('/'), contains('Pre-mixed'), contains('All')) |>
+                                    select(-contains('Unknown')))
                )
              ) |>
              tab_style(
                style = cell_text(align = 'center'),
-               locations = cells_column_labels(columns = 2:13)
+               locations = cells_column_labels(columns = 2:ncol(comparisons_table_prep |>
+                                                                  rename_with(~gsub('IQVIA', 'NPA', .x)) |>
+                                                                  select(stratifier, group, contains('/'), contains('Pre-mixed'), contains('All')) |>
+                                                                  select(-contains('Unknown')))
+               )
              ) |>
              tab_spanner_delim(
                delim = '_',
                reverse = TRUE
              )|>
-             tab_source_note('- represents data that has been suppressed following data presentation
-                              standards, N/A cells indicate that data for that group is not available
-                             from that data source')
+             tab_source_note('- represents data that has been suppressed following the National Center for Health Statistics data presentation
+                              standards, NA cells indicate that data for that group is not available
+                             from that data source') |>
+             # data_color(
+             #   columns = everything(), # or specify specific columns
+             #   na_color = 'grey',
+             #   palette = 'white'
+             # ) %>%
+             # # Replace NA values with an empty string
+             # sub_missing(
+             #   columns = everything(), # or specify specific columns
+             #   missing_text = ""
+             # )|>
+             tab_footnote(locations = cells_stub(rows = group == 'NP/PA'),
+                          footnote = 'Nurse Practitioner/Physicians Assistant') |>
+             tab_footnote(locations = cells_stub(rows = group == 'OBGYN'),
+                          footnote = 'Obstetrics/Gynecology') |>
+             tab_options(footnotes.marks = c('*', '†', '‡', '§', '||', '¶', '#', '**', '††', '‡‡'))
   ),
 
   tar_target(compare_not_insulins_gt,
             comparisons_table_prep |>
+              mutate(across(everything(), ~if_else(.x == 'N/A', NA, .x))) |>
               rename_with(~gsub('IQVIA', 'NPA', .x)) |>
               select(stratifier, group, contains('Biguanides'),
                      contains('Sulfon'),
@@ -3034,16 +3060,49 @@ tar_target(
                   cell_text(align = 'right')
                 ),
                 locations = cells_body(
-                  columns = 2:13
+                  columns = 2:ncol( comparisons_table_prep |>
+                                      rename_with(~gsub('IQVIA', 'NPA', .x)) |>
+                                      select(stratifier, group, contains('Biguanides'),
+                                             contains('Sulfon'),
+                                             contains('TZD'),
+                                             contains('DPP'),
+                                             contains('GLP'),
+                                             contains('SGLT'),
+                                             contains('All insulin'))
+                  )
                 )
               ) |>
               tab_style(
                 style = cell_text(align = 'center'),
-                locations = cells_column_labels(columns = 2:13)
+                locations = cells_column_labels(columns = 2:ncol(comparisons_table_prep |>
+                                                                   rename_with(~gsub('IQVIA', 'NPA', .x)) |>
+                                                                   select(stratifier, group, contains('Biguanides'),
+                                                                          contains('Sulfon'),
+                                                                          contains('TZD'),
+                                                                          contains('DPP'),
+                                                                          contains('GLP'),
+                                                                          contains('SGLT'),
+                                                                          contains('All insulin')))
+                )
               ) |>
-              tab_source_note('- represents data that has been suppressed following data presentation
-                              standards, N/A cells indicate that data for that group is not available
-                             from that data source')
+              tab_source_note('- represents data that has been suppressed following the National Center for Health Statistics data presentation
+                              standards, NA cells indicate that data for that group is not available
+                             from that data source')|>
+              # data_color(
+              #   columns = everything(), # or specify specific columns
+              #   na_color = 'grey',
+              #   palette = 'white'
+              # ) %>%
+              # # Replace NA values with an empty string
+              # sub_missing(
+              #   columns = everything(), # or specify specific columns
+              #   missing_text = ""
+              # ) |>
+              tab_footnote(locations = cells_stub(rows = group == 'NP/PA'),
+                           footnote = 'Nurse Practitioner/Physicians Assistant') |>
+              tab_footnote(locations = cells_stub(rows = group == 'OBGYN'),
+                           footnote = 'Obstetrics/Gynecology') |>
+              tab_options(footnotes.marks = c('*', '†', '‡', '§', '||', '¶', '#', '**', '††', '‡‡'))
   ),
 
   tar_target(save_compare_not_insulins,

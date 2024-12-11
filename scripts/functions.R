@@ -536,8 +536,8 @@ createFactors <- function(meps_data) {
           ) |>
         fct_collapse(
           `Poor (<100% of poverty line)` = "Poor (<100% of poverty line)",
-          `Low income (100% - 300% of poverty line)` = c('Near poor', 'Low income'),
-          `Middle income (300% - 399% of poverty line)` = c('Middle income'),
+          `Low income (100% - <200% of poverty line)` = c('Near poor', 'Low income'),
+          `Middle income (200% - 399% of poverty line)` = c('Middle income'),
           `High income (>= 400% of poverty line)` = 'High income'
         )
       )
@@ -1405,7 +1405,7 @@ createIPUMSFactors <- function(meps_data) {
         ) |>
         fct_collapse(
           `Poor (<100% of poverty line)` = "Poor (<100% of poverty line)",
-          `Low income (100% - 200% of poverty line)` = c('Near poor', 'Low income'),
+          `Low income (100% - <200% of poverty line)` = c('Near poor', 'Low income'),
           `Middle income (200% - 399% of poverty line)` = c('Middle income'),
           `High income (>= 400% of poverty line)` = 'High income'
         )
@@ -1940,7 +1940,7 @@ prepGTMepsIqvia <- function(data) {
         'High school',
         'Greater than high school',
         'Poor (<100% of poverty line)',
-        'Low income (100% - 200% of poverty line)',
+        'Low income (100% - <200% of poverty line)',
         'Middle income (200% - 399% of poverty line)',
         'High income (>= 400% of poverty line)',
         'Cardiology',

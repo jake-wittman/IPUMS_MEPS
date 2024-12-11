@@ -118,16 +118,17 @@ wide_not_insulin <- not_insulin_data |>
 wide_meps_iqvia <- meps_iqvia |> 
   filter(stratifier != 'Prescribing medical specialty') |> 
   pivot_wider(names_from = data,
-              values_from = c(Number, Percent, Flags),
-              id_cols = c(Prescription, stratifier, group))
+              values_from = c(Number, Percent, PercentLL, PercentUL, Flags),
+              id_cols = c(Prescription, stratifier, group)) |> 
+  select(-PercentLL_IQVIA, -PercentUL_IQVIA)
 
 total_non_insulin_iqvia <- sum(
-  wide_meps_iqvia$Number_IQVIA[wide_meps_iqvia$stratifier == 'Overall' & !str_detect(wide_meps_iqvia$Prescription, 'nsulin')],
+  wide_meps_iqvia$Number_IQVIA[wide_meps_iqvia$stratifier == 'Overall' & !str_detect(wide_meps_iqvia$Prescription, 'Insulin -')],
   na.rm = TRUE
 )
 
 total_non_insulin_meps <- sum(
-  wide_meps_iqvia$Number_MEPS[wide_meps_iqvia$stratifier == 'Overall' & str_detect(wide_meps_iqvia$Prescription, 'nsulin')],
+  wide_meps_iqvia$Number_MEPS[wide_meps_iqvia$stratifier == 'Overall' & !str_detect(wide_meps_iqvia$Prescription, 'Insulin -')],
   na.rm = TRUE
 )
 
@@ -160,7 +161,9 @@ wide_meps_iqvia <- wide_meps_iqvia |>
   mutate(number_diff = Number_IQVIA - Number_MEPS,
          perc_diff = Percent_IQVIA - Percent_MEPS) |> 
   mutate(across(c(number_diff, perc_diff), ~case_when(!is.na(Flags_MEPS) ~ NA,
-                                                      TRUE ~ .x)))
+                                                      TRUE ~ .x)),
+         across(c(PercentLL_MEPS, PercentUL_MEPS), ~as.numeric(.x))) |> 
+  mutate(perc_diff_between = between(Percent_IQVIA, PercentLL_MEPS, PercentUL_MEPS))
   
 comparison_table <- wide_meps_iqvia |> 
   mutate(number_diff = round(number_diff, digits = -3)) |> 
@@ -206,7 +209,7 @@ heatmap_data <- wide_meps_iqvia |>
                                    'Copay: >75',
                                    'Poverty: High income (>= 400% of poverty line)',
                                    'Poverty: Middle income (200% - 399% of poverty line)',
-                                   'Poverty: Low income (100% - 200% of poverty line)',
+                                   'Poverty: Low income (100% - <200% of poverty line)',
                                    'Poverty: Poor (<100% of poverty line)'))) |> 
   mutate(Prescription = str_remove(Prescription, 'Insulin - ')) |> 
   mutate(Prescription = factor(Prescription,
@@ -245,7 +248,11 @@ heatmap <- heatmap_data |>
   mutate(perc_diff_adj = case_when(perc_diff > 15 ~ 15,
                                    perc_diff < -15 ~ -15,
                                    TRUE ~ perc_diff),
-         perc_diff_label = specifyDecimal(perc_diff, 1)) |> 
+         perc_diff_label = specifyDecimal(perc_diff, 1),
+         perc_diff_label = case_when(
+           perc_diff_between == FALSE & Prescription == 'All insulins' & stratifier == 'Overall' ~ perc_diff_label,
+           perc_diff_between == FALSE ~ paste0(perc_diff_label, '*'),
+                                     TRUE ~ perc_diff_label)) |> 
   group_split(insulin_indicator) |>
   map(
     ~ ggplot(.x, aes(
@@ -287,13 +294,16 @@ wrapped_heatmap <- heatmap[[1]] / heatmap[[2]] +
 **Prescriptions for Antihyperglycemic Medication, United States
 2020–2021**
 
-Jacob T. Wittman, PhD, Maribeth C. Lovegrove MPH, Kai McKeever Bullard,
-PhD MPH, Andrew I. Geller MD, Osatohamwen I. Idubor MD, Yu Wang ...,
-Stephen R. Benoit, MD MPH
+Jacob T. Wittman^1^, PhD, Maribeth C. Lovegrove^2^, MPH, Kai McKeever
+Bullard^1^, PhD MPH, Sola Han^1^, PhD PharmD, Andrew I. Geller^2^, MD,
+Osatohamwen I. Idubor^1^, MD MHS, Yu Wang^1^, PhD, Stephen R. Benoit^1^,
+MD MPH
 
-Division of Diabetes Translation, Centers for Disease Control and
-Prevention, Atlanta, GA, United States Division of Healthcare Quality
-Promotion, Centers for Disease Control and Prevention, Atlanta, GA
+^1^Division of Diabetes Translation, Centers for Disease Control and
+Prevention, Atlanta, GA, United States
+
+^2^Division of Healthcare Quality Promotion, Centers for Disease Control
+and Prevention, Atlanta, GA, United States
 
 Corresponding Author: Jacob T. Wittman, ugv4\@cdc.gov, 770-488-3533
 
@@ -303,18 +313,17 @@ Centers for Disease Control and Prevention.
 
 Keywords:
 
-Word Count: 3518 words, 4000 limit
+Word Count: 3732 words, 4000 limit
 
 Number of tables and figures: 4
 
 \pagebreak
 
-# Abstract (234 words, limit 250)
+# Abstract (248 words, limit 250)
 
-**Objective:** To compare data from the International Quality and Value
-Institute Advisors (IQVIA) National Prescription Audit (NPA) and the
-Medical Expenditures Panel Survey (MEPS) on the number of
-antihyperglycemic medications.
+**Objective:** To compare data from the IQVIA National Prescription
+Audit (NPA) and the Medical Expenditures Panel Survey (MEPS) on the
+number of antihyperglycemic medications.
 
 **Research Design and Methods:** We queried both NPA and MEPS for
 antihyperglycemic drug prescriptions in 2020–2021. We report the total
@@ -335,11 +344,13 @@ percentages differing by as much as 22 percentage points.
 
 **Conclusions:** Overall, estimates between the two datasets are
 similar. Differences may be due to differing methodologies and different
-sample populations. MEPS provides patient-level data and may be more
-appropriate for analysis of patient-level factors that impact medication
-prescriptions. Because NPA reports coverage of over 90% of retail
-pharmacies in the US, NPA may be well-suited to analysis of national
-trends among these pharmacies.
+sample populations. NPA data covers 90% of retail, mail order, and
+long-term care pharmacies which allows for more precise estimates for
+fills from these pharmacies, whereas MEPS data comes from household
+surveys, which may capture a broader range of pharmacies, although with
+lower precision than estimates from NPA. MEPS provides patient-level
+data and may be more appropriate for analysis of patient-level factors
+that impact medication prescriptions.
 
 \pagebreak
 
@@ -348,50 +359,49 @@ trends among these pharmacies.
 As new medications emerge and prescribing practices evolve,
 understanding trends in diabetes medication use is crucial for informing
 public health interventions, healthcare policy, and clinical practice.
-Two commonly used sources for data on prescriptions are the proprietary
-International Quality and Value Institute Advisors (IQVIA) National
-Prescription Audit (NPA) and the publicly available Medical Expenditures
-Panel Survey (MEPS) [@availabl; @MEPSdocumentation]. Both sources
-provide data on the number of prescriptions of different classes of
-medications. NPA covers approximately 90% of dispensed prescriptions in
-the US from pharmacies; however, information on sociodemographics,
-behaviors, and other key characteristics is lacking. MEPS is a
-nationally representative data source that collects information on
-prescription fills as self-reported from households while also providing
-information on the sociodemographic and behavioral variables NPA does
-not provide.
+Two potential sources for data for national surveillance of these
+prescriptions are the proprietary International Quality and Value
+Institute Advisors (IQVIA) National Prescription Audit (NPA) and the
+publicly available Medical Expenditures Panel Survey (MEPS) [@availabl;
+@MEPSdocumentation]. Both sources provide data on the number of
+prescriptions of different classes of medications. NPA covers
+approximately 90% of dispensed prescriptions in the US from pharmacies;
+however, information on sociodemographics, behaviors, and other key
+characteristics is lacking. MEPS is a nationally representative data
+source that collects information on prescription fills as self-reported
+from households while also providing information on the sociodemographic
+and behavioral variables that NPA does not provide.
 
 The accuracy of MEPS prescription data has been evaluated by comparing
 it to Medicare Part D claims in 2006 and 2007 [@hill2011]. In general,
 the concordance between the two datasets was high; when they differed it
 was because respondents often underreported the number of different
 drugs taken but overreported the number of fills [@hill2011]. These
-discrepancies were consistent across most sociodemographic groups and so
-did not adversely impact behavioral analyses [@hill2011]. On the subject
-of diabetes care and medications, MEPS has been used to examine
-disparities in the use of GLP-1 receptor agonists (GLP-1RA) and SGLT-2
-inhibitors (SGLT-2i) among adults with diabetes based on insurance
-coverage [@bepo2024], evaluate trends in the continuous use of
-medications for glucose control, blood pressure, and lipids among adults
-with diabetes [@chehal2023], evaluate trends in diabetes medication use
-patterns across different demographic and socioeconomic groups
-[@raval2020], and analyze trends in the use of insulin and glucose
-monitoring among individuals with diabetes [@perez-nieves2022].
+discrepancies were consistent across most sociodemographic groups
+[@hill2011]. MEPS has been used to examine disparities in the use of
+GLP-1 receptor agonists (GLP-1RA) and SGLT-2 inhibitors (SGLT-2i) among
+adults with diabetes based on insurance coverage [@bepo2024]; annual
+trends in the continuous use of medications for glucose control, blood
+pressure, and lipids among adults with diabetes [@chehal2023]; annual
+trends in diabetes medication use patterns across different demographic
+and socioeconomic groups [@raval2020]; and annual trends in the use of
+insulin and glucose monitoring devices among individuals with diabetes
+[@perez-nieves2022].
 
-NPA has been used alongside data on internet searches for SGLT-2i and
-GLP-1RA to estimate the correlation between actual prescription rates
-and the frequency with which these medications were searched
-[@dzaye2022]. It has also been used to estimate monthly prescriptions of
-these medications and how these trends vary by different clinician
-specialities[@adhikari2022]. The completeness of NPA in capturing the
-use of oral anti-cancer medications was evaluated by linking data from
-NPA to the Surveillance, Epidemiology, and End Results Program (SEER)
-[@tran2020]. They found that only 67% of cases in the Surveillance,
-Epidemiology, and End Results (SEER) program had matches in the NPA
-database, and this number varied by race, sex, and insurance status
-[@tran2020]. To date, there has been no evaluation of how MEPS and NPA
-compare for reporting the number and type of prescriptions for
-antihyperglycemic medication.
+Meanwhile, NPA has been used in combination with data on internet
+searches for SGLT-2i and GLP-1RA to estimate the correlation between
+actual prescription rates and the frequency with which these medications
+were searched [@dzaye2022]. It has also been used to estimate monthly
+prescriptions of these medications and how these more granular time
+trends vary by different clinician specialties [@adhikari2022]. The
+completeness of NPA in capturing the use of oral anti-cancer medications
+was evaluated by linking data from NPA to the Surveillance,
+Epidemiology, and End Results Program (SEER) [@tran2020]. They found
+that only 67% of cases in the Surveillance, Epidemiology, and End
+Results (SEER) program had matches in the NPA database, and this number
+varied by race, sex, and insurance status [@tran2020]. To date, there
+has been no evaluation of how MEPS and NPA compare for reporting the
+number and type of prescriptions for antihyperglycemic medications.
 
 This paper examines the number of antihyperglycemic medication
 prescriptions in the US during 2020-2021, focusing on a comparative
@@ -406,77 +416,90 @@ insights [@defever2024; @tran2020].
 ## Data Sources
 
 We used two nationally representative data sources. First, we queried
-drug prescriptions from NPA from 2020–2021 [@iqvia]. NPA collects
-prescription data from retail, mail order, and long-term care
-pharmacies. For this analysis, we excluded long-term care pharmacies.
-NPA provides a national estimate of prescriptions dispensed, receiving
-over 3 billion prescription claims per year. Over 48,000
+drug prescriptions from NPA from 2020–2021 [@iqvia]. NPA provides a
+national estimate of prescriptions dispensed, receiving over 3 billion
+prescription claims per year. Over 48,000
 <!--# This number comes from  https://www.sciencedirect.com/science/article/pii/S0376871620304622-->
 pharmacies are included in the data, representing 90% of all retail
-pharmacies. Second, we used data from the Medical Expenditure Panel
-Survey (MEPS) for 2020–2021 from the Agency for Healthcare Research and
-Quality, accessed through IPUMS [@MEPSdocumentation; @blewett2023ipums].
-This survey consists of a nationally representative sample of households
-of the noninstitutionalized population of the U.S, which are a subsample
-of households surveyed in the National Health Interview Survey. IPUMS
-provides a harmonized version of MEPS data that standardizes variable
-names and coding through time[@blewett].
+pharmacies. NPA collects prescription data from retail, mail order, and
+long-term care pharmacies. For this analysis, we excluded long-term care
+pharmacies so estimates would be comparable to the non-institutionalized
+population from MEPS. We also restricted our analysis to adults. Second,
+we used data from MEPS for 2020–2021 from the Agency for Healthcare
+Research and Quality, accessed through IPUMS [@MEPSdocumentation;
+@blewett2023ipums]. This survey consists of a nationally representative
+sample of households of the non-institutionalized population of the U.S,
+which are a subsample of households surveyed in the National Health
+Interview Survey. IPUMS provides a harmonized version of MEPS data that
+standardizes variable names and coding through time [@blewett].
 
-The MEPS prescription medication records provide data on self-reported
+MEPS prescription medication records provide data on self-reported
 prescribed medicine; each record is one household-reported medicine
 purchased or otherwise obtained in a year. Participants were asked to
 supply the names of prescribed medicine, the reason for the
 prescription, the number of times the prescription was obtained, and the
-names and locations of pharmacies that filled the prescriptions.
-Industry experts were consulted to identify outliers. Outliers were
-identified by comparing the number of reported prescriptions with the
-number of days the participant was in the round for the survey and any
-identified outliers imputed. These data were then linked with the
-person-level data from the full-year consolidated files to provide
-demographic data. We used diabetes status to restrict analysis to drugs
-purchased by someone with diabetes. This resulted in a dataset of
+names and locations of pharmacies that filled the prescriptions. MEPS
+also collects data from the pharmacies of participants on the strength,
+quantity, and days of supply of their medications. Industry experts were
+consulted by MEPS to identify outliers. Outliers were identified by
+comparing the number of reported prescriptions with the number of days
+the participant was in the round for the survey and any identified
+outliers imputed. These data were then linked with the person-level data
+from the full-year consolidated files to provide demographic data. We
+used diabetes status to restrict analyses to drugs purchased by someone
+with diabetes. This resulted in a dataset of
 `r format(nrow(pooled_dat), big.mark = ',')` records of medication
 purchases for
-`r format(length(unique(pooled_dat$MEPSID)), big.mark = ',')`
-individuals.
+`r format(length(unique(pooled_dat$MEPSID)), big.mark = ',')` adults.
 
 ## Analysis
 
-For each medication fill record, the name of the medicine is reported as
-well as the most commonly used generic name based on the Multum Lexicon
-database. Generic medications used in the management of diabetes found
-in the data include sulfonylureas, biguanides, insulin,
-thiazolidinediones (TZD), dipeptidyl peptidase 4 inhibitors (DPPi-4),
-GLP-1RA, SGLT2i, and antidiabetic combinations. Records for antidiabetic
-combinations were split into two records, one for each of the
-constitutive drug class (e.g. a record for glyburide-metformin was split
-into a record for sulfonylureas and a record for biguanides). We used
-the provided generic drug names and medicine names to further classify
-insulin records into basal, bolus, or pre-mixed as well as human or
-analog categories. In cases where the generic drug name conflicted with
-the provided drug name, the insulin was classified as "insulin -
-unknown". Similarly, any non-insulin medications where provided data
-conflicted were classified as "unknown". Accounting for complex survey
-weights and pooling data for two years, we estimated the number of
-prescriptions purchased for each generic medication previously listed
-[@MEPSdocumentation].
+The outcome variable for our analysis is the estimate of the number of
+prescriptions purchased of each generic antihyperglycemic medication
+among the population of adults with diabetes. For each medication fill
+record in MEPS, the name of the medicine is reported as well as the most
+commonly used generic name based on the Multum Lexicon database. Generic
+medications used in the management of diabetes found in the MEPS include
+sulfonylureas, biguanides, insulin, thiazolidinediones (TZD), dipeptidyl
+peptidase 4 inhibitors (DPP-4i), GLP-1RA, SGLT2i, and antidiabetic
+combinations. Records for antidiabetic combinations in MEPS were split
+into two records, one for each of the constitutive drug class (e.g. a
+record for glyburide-metformin was split into a record for sulfonylureas
+and a record for biguanides). We used the provided generic drug names
+and medicine names to further classify insulin records into basal,
+bolus, or pre-mixed as well as human or analog categories. In cases
+where the generic drug name conflicted with the provided drug name, the
+insulin was classified as "insulin - unknown". Similarly, any
+non-insulin medications where provided data conflicted were classified
+as "unknown". MEPS provides instructions for producing estimates,
+accounting for complex survey weights and pooling data for two years, we
+estimated the number of prescriptions purchased for each generic
+medication previously listed [@MEPSdocumentation]. We also queried NPA
+for the same estimates of generic antihyperglycemic medication
+prescriptions among adults with diabetes.
 
 All estimates were age-adjusted using direct standardization and
 standardized to the 2000 U.S. population for ages 20–39, 40–59, 60–64,
 65–74, and ≥75 years. We present these estimates overall, as well as
-stratified by sex, race and ethnicity, age, highest educational degree
-obtained, ratio of the family income to poverty line (poverty income
-ratio), type of health insurance, and copay amount. Suppression rules
-were applied to results from MEPS to suppress unreliable estimates and
-to present only those results that were considered reliable
-[@parker2023suppression]. Additionally, each dataset contains
-stratifying variables unique to those data; NPA provides information on
-the medical specialty of the provider, while MEPS provides additional
-sociodemographic data on race and origin as well as educational
-attainment. As a result, we were unable to make comparisons between all
-available NPA values and MEPS. NPA uses proprietary weighting methods,
-therefore it is not possible to estimate confidence intervals for their
-estimates.
+stratified by sex, age, type of health insurance, and copay amount.
+Additionally, each dataset contains stratifying variables unique to
+those data; NPA provides information on the medical specialty of the
+provider, while MEPS provides additional sociodemographic data on race
+and origin, educational attainment, and ratio of the family income to
+poverty line (poverty income ratio). Suppression rules were applied to
+results from MEPS to suppress unreliable estimates and to present only
+those results that were considered statistically reliable
+[@parker2023suppression]. We also calculated the percentage point
+difference between NPA and MEPS estimates of the percentage of
+prescriptions for each type of medication out of the total number of
+insulin prescriptions and the total number of prescriptions for diabetes
+medications, overall and among different stratifying variables. As a
+result, we were unable to make comparisons between all available NPA
+values and MEPS. Because of the large sample size of NPA and its
+coverage of its population, we treat NPA estimates as census estimates
+with negligible variance. We identified percentages that differed
+between the two datasets if the 95% confidence interval for the MEPS
+percentage did not include the NPA percentage.
 
 # Results
 
@@ -485,10 +508,9 @@ estimates.
 Total prescription count estimates from NPA and MEPS for insulins are in
 Table 1. Analog insulins comprised most (93.1%) of the short-acting
 insulins prescription claims in the NPA data. Almost 90% of patients
-using human short-acting insulin were ≥40 years while nearly 20% of the
-patients using analog short-acting insulin were \<40 years (Table 1).
-
-Data from NPA showed analog insulins comprised 96.0% of the basal
+using human short-acting insulin were ≥40 years while 80% of the
+patients using analog short-acting insulin were ≥40 years (Table 1).
+Estimates from NPA showed analog insulins comprised 96.0% of the basal
 insulin prescription claims. Among patients using human basal insulin
 (NPH), 19.6% were age 20–39 years compared to 8.3% of those using analog
 basal insulins. Females comprised a higher percentage of the NPH users
@@ -500,13 +522,13 @@ than 1% of analog basal insulin users were uninsured. For NPH users,
 30.5% of the patients paid over \$75. Only 6.1% of insulin prescriptions
 were for premixed insulins.
 
-Overall, among insulin types, the largest differences between datasets
-were seen in the bolus analog and basal analog categories (Figure 1).
-For these categories, the MEPS estimate for the percentage of bolus
-analog prescriptions was
+Among the different insulin types, the largest differences between
+datasets were seen in the bolus analog and basal analog categories
+(Figure 1). For these categories, the MEPS estimate for the percentage
+of bolus analog prescriptions was
 `r specifyDecimal(comparePercents(wide_insulin_data, 'Bolus/Analog', 'MEPS'), 1)`
-percentage points higher than the NPA value, while the raw number of
-prescriptions for bolus analog insulins reported in MEPS was almost
+percentage points higher than the NPA value, while the estimated number
+of prescriptions for bolus analog insulins reported in MEPS was almost
 double the value reported in NPA. In contrast, the MEPS estimate for the
 percentage of basal analog prescriptions was
 `r specifyDecimal(abs(comparePercents(wide_insulin_data, 'Basal/Analog', 'MEPS')), 1)`
@@ -517,122 +539,107 @@ Based on the information provided by MEPS,
 of insulin prescriptions could not be categorized.
 
 Among insulin prescriptions, the largest discrepancy between datasets
-were observed for the insurance groups (Figure 2A). For example, the
-MEPS estimates were between 16.0 and 19.2 percentage points higher for
-all categories of insulin prescriptions among those with public
-insurance, while NPA estimates were 19.0 percentage points higher for
-for all insulin prescriptions among those with private insurance.
-Differences in estimates between the two data sources were lower for
-both the age and sex groups than the insurance. Differences in estimates
-among the copay groups were also lower, although for most insulin and
-copay groups, the MEPS estimates were higher. Estimates among the age
-groups ranged from
+was observed for the insurance groups (Figure 2A). For example, the MEPS
+estimates were between
+`r specifyDecimal(abs(range(heatmap_data$perc_diff[heatmap_data$group== 'Public only' & heatmap_data$insulin_indicator == 'insulin'], na.rm = TRUE)[2]), 1)`
+and
+`r specifyDecimal(abs(range(heatmap_data$perc_diff[heatmap_data$group== 'Public only' & heatmap_data$insulin_indicator == 'insulin'], na.rm = TRUE)[1]), 1)`
+percentage points higher for all categories of insulin prescriptions
+among those with public insurance, while NPA estimates were as much as
+`r specifyDecimal(abs(range(heatmap_data$perc_diff[heatmap_data$group== 'Any private' & heatmap_data$insulin_indicator == 'insulin'], na.rm = TRUE)[2]), 1)`
+percentage points higher for all insulin prescriptions among those with
+private insurance.
+
+The magnitude of the differences in estimates between the two data
+sources were smaller for the age and sex groups than the insurance
+groups. Estimates among the age groups ranged from
 `r specifyDecimal(abs(range(heatmap_data$perc_diff[heatmap_data$stratifier == 'Age' & heatmap_data$insulin_indicator == 'insulin'], na.rm = TRUE)[1]), 1)`
 percentage points higher for MEPS (bolus analog prescriptions for those
-age 60–74) to
+aged 60–74) to
 `r specifyDecimal(abs(range(heatmap_data$perc_diff[heatmap_data$stratifier == 'Age' & heatmap_data$insulin_indicator == 'insulin'], na.rm = TRUE)[2]), 1)`
-percentage points higher for NPA (all insulins estimate for adults age
-40–59). Nine of the age groups had higher MEPS estimates, while only
-four of the age groups had higher NPA estimates. Within the sex groups,
-the estimate for bolus analog prescriptions for males was the largest
-difference: MEPS had the higher estimate
-(`r specifyDecimal(abs(range(heatmap_data$perc_diff[heatmap_data$stratifier == 'Sex' & heatmap_data$insulin_indicator == 'insulin'], na.rm = TRUE)[1]), 1)`
-percentage points higher), while the estimated percentage for the same
-prescription for females had the largest difference where NPA provided
-the higher estimate
-(`r specifyDecimal(abs(range(heatmap_data$perc_diff[heatmap_data$stratifier == 'Sex' & heatmap_data$insulin_indicator == 'insulin'], na.rm = TRUE)[2]), 1)`
-percentage points higher). NPA estimates were higher for females across
-all insulin prescriptions, while MEPS estimates were higher for males.
+percentage points higher for NPA (all insulins estimate for adults aged
+40–59). Within the sex groups, only the estimated percentage from NPA
+for all insulins for females was
+`r specifyDecimal(heatmap_data$perc_diff[heatmap_data$group == 'Female' & heatmap_data$Prescription == 'All insulins'], 1)`
+percentage points higher than the same estimate from MEPS.
 
 ## Non-insulin medications
 
 Total prescription count estimates from NPA and MEPS are available for
-non-insulins in Table 2. Almost half (49.3%) of all non-insulin diabetes
-medications prescriptions were for metformin. Over ¾ of patients
-received the medication for ≤ \$10. Sulfonylureas were the second most
-commonly prescribed diabetes medications and 20.0% of patients using
-that medication were ≥75 years of age. Thiazolidinediones were the least
-prescribed and of those taking that class of medication, 64.7% were ≥60
-years of age, 58.3% were male, and 63.7% paid ≤ \$10. DDP-4i were the
-second least commonly prescribed medication and of those patients taking
-the medication, 15.8% paid \>\$75. A higher percentage of patients
-taking GLP1-RA were female (54.4%) and 18.7% of the prescriptions came
-from endocrinologists, a higher percentage than any of the other
-diabetes medication classes. Among those prescribed a GLP1-RA, 69.7% had
-private insurance and 28.0% had Medicare Part D. A higher percentage of
-patients taking SGLT2i were male (58.1%), 14.8% of the prescriptions
-were from endocrinologists and 2.2% from cardiologists, 71.1% had
-private insurance, and 14.2% paid \> \$75.
+non-insulins in Table 2. Estimates from NPA show that almost half
+(49.3%) of all non-insulin diabetes medications prescriptions were for
+metformin. Over ¾ of patients received the medication for ≤ \$10.
+Sulfonylureas were the second most commonly prescribed diabetes
+medications (16.4%) and 20.0% of patients using that medication were ≥75
+years of age. Thiazolidinediones were the least prescribed and of those
+taking that class of medication, 64.7% were ≥60 years of age, 58.3% were
+male, and 63.7% paid ≤ \$10. DPP-4i were the second least commonly
+prescribed medication and of those patients taking the medication, 15.8%
+paid \>\$75. A higher percentage of patients taking GLP1-RA were female
+(54.4%) and 18.7% of the prescriptions came from endocrinologists, a
+higher percentage than any of the other diabetes medication classes.
+Among those prescribed a GLP1-RA, 69.7% had private insurance and 30.1%
+had public insurance. A higher percentage of patients taking SGLT2i were
+male (58.1%), 14.8% of the prescriptions were from endocrinologists and
+2.2% from cardiologists, 71.1% had private insurance, and 14.2% paid \>
+\$75.
 
 Non-insulin medication percentages were similar for both NPA and MEPS
-across many drug categories (Figure 1). However, the largest differences
-were seen in the all insulin, sulfonylureas, biguanides, and SGLT2i
-medications, with MEPS estimated percentages being higher for insulin
-(`r specifyDecimal(comparePercents(wide_not_insulin, 'All insulins', 'MEPS'), 1)`
-percentage points) and lower for the other three medications
-(`r specifyDecimal(abs(comparePercents(wide_not_insulin, 'Sulfonylureas', 'IQVIA')), 1)`
-percentage points,
-`r specifyDecimal(abs(comparePercents(wide_not_insulin, 'Biguanides', 'IQVIA')), 1)`
-percentage points,
-`r specifyDecimal(abs(comparePercents(wide_not_insulin, 'SGLT2i', 'IQVIA')), 1)`
-percentage points, respectively). As with the insulin prescriptions,
+across many drug categories (Figures 1B & 2B). As with the insulin
+prescriptions,
 `r specifyDecimal(pull(filter(wide_not_insulin, Prescription == 'Unknown'), MEPS), 1)`%
-of non-insulin medications could not be classified.
-
-Similar to the insulins, the largest discrepancy between the two
-datasets in the percentage of non-insulin medications prescriptions was
-observed among the insurance groups (Figure 2B). Within the insurance
-groups, the discrepancies ranged from
+of non-insulin medications could not be classified. The largest
+discrepancy between the two datasets in the percentage of non-insulin
+medications prescriptions was observed among the insurance groups
+(Figure 2B). Within the insurance groups, the discrepancies ranged from
 `r specifyDecimal(abs(range(heatmap_data$perc_diff[heatmap_data$stratifier == 'Insurance' & heatmap_data$insulin_indicator == 'not insulin'], na.rm = TRUE)[1]), 1)`
-percentage points higher for MEPS (biguanides estimate for those on
-public only insurance) to
+percentage points higher for MEPS (TZD estimate for those on public only
+insurance) to
 `r specifyDecimal(abs(range(heatmap_data$perc_diff[heatmap_data$stratifier == 'Insurance' & heatmap_data$insulin_indicator == 'not insulin'], na.rm = TRUE)[2]), 1)`
 percentage points higher for NPA (TZD estimate for those on any private
-insurance). The estimates from NPA were higher for eight of the 13
+insurance). The estimates from NPA were higher for eight of the 14
 insurance groups where MEPS estimates were available. Among the copay
-groups, MEPS estimates were higher for almost all non-insulin
-medications. The differences for all other copay groups ranged from
-`r specifyDecimal(abs(range(heatmap_data$perc_diff[heatmap_data$stratifier == 'Copay' & heatmap_data$insulin_indicator == 'not insulin' & heatmap_data$group != '0'], na.rm = TRUE)[2]), 1)`
+groups, MEPS estimates were higher for nine of the 31 copay by
+non-insulin medication groups. The differences for copay groups ranged
+from
+`r specifyDecimal(abs(range(heatmap_data$perc_diff[heatmap_data$stratifier == 'Copay' & heatmap_data$insulin_indicator == 'not insulin' ], na.rm = TRUE)[2]), 1)`
 to
 `r specifyDecimal(abs(range(heatmap_data$perc_diff[heatmap_data$stratifier == 'Copay' & heatmap_data$insulin_indicator == 'not insulin'], na.rm = TRUE)[1]), 1)`
 percentage points higher for NPA and MEPS, respectively. The largest
 differences were seen for those with no copay purchasing TZD and those
 with a copay between \$0 and \$10 purchasing DPP-4i, which were 16.5 and
-15.0 percentage points higher in the MEPS data, respectively. The age
-group with the largest difference was the estimate for GLP-1RA for
-adults age 40–59, which had an NPA estimate that was
+15.0 percentage points higher in the MEPS data, respectively.
+
+The age group with the largest difference was the estimate for GLP-1RA
+for adults aged 40–59, which had an NPA estimate that was
 `r specifyDecimal(abs(range(heatmap_data$perc_diff[heatmap_data$stratifier == 'Age' & heatmap_data$insulin_indicator == 'not insulin'], na.rm = TRUE)[2]), 1)`
 percentage points higher than the MEPS estimate. The largest difference
-where MEPS was the higher estimate was for adults age 75 or greater,
+where MEPS was the higher estimate was for adults aged 75 or greater,
 where the MEPS estimate for sulfonylureas prescriptions was
 `r specifyDecimal(abs(range(heatmap_data$perc_diff[heatmap_data$stratifier == 'Age' & heatmap_data$insulin_indicator == 'not insulin'], na.rm = TRUE)[1]), 1)`
 percentage points higher than the NPA estimate. NPA estimates were
-higher for all non-insulin medication among adults age 40–59, while for
-other groups there was variation in which dataset had the higher
-estimate. The estimates for non-insulin medication prescriptions within
-the sex groups followed similar patterns to the insulin estimates: all
-of the values for females were higher in the NPA dataset, while
-estimates for males were higher in the MEPS dataset. The largest
-differences within the sex group were for TZD prescriptions: the NPA
-estimate was
-`r specifyDecimal(abs(range(heatmap_data$perc_diff[heatmap_data$stratifier == 'Sex' & heatmap_data$insulin_indicator == 'not insulin'], na.rm = TRUE)[2]), 1)`
-percentage points higher for females, while the MEPS estimate was
-`r specifyDecimal(abs(range(heatmap_data$perc_diff[heatmap_data$stratifier == 'Sex' & heatmap_data$insulin_indicator == 'not insulin'], na.rm = TRUE)[1]), 1)`
-percentage points higher for males.
+higher for biguanides and GLP-1RA among adults aged 40–59. The estimates
+for non-insulin medication prescriptions within the sex groups followed
+similar patterns to the insulin estimates: all of the values for females
+were higher in the NPA dataset, while estimates for males were higher in
+the MEPS dataset, although only the estimated 95% confidence interval
+for GLP-1RA in the MEPS data excluded the NPA estimate.
 
 # Discussion
 
-Our study aimed to compare NPA and MEPS as sources of data on
-antihyperlycemic prescriptions. Both datasets reported relatively
-similar numbers and percentages for most anithyperglycemic prescriptions
-in the U.S., although there was a large difference in the estimated
-total number of insulins prescribed. Biguandies were the most commonly
-prescribed medication, followed by insulin, as reported by both data
-sources. Analog insulins in both the fast-acting and long-acting
-categories are the most prescribed insulin types. These results are
-in-line with findings from other studies. In one study that used data
-from MEPS for 2008–2015, biguanides were the most commonly prescribed
-class of medications overall, accounting for approximately 59% in 2015
+Our study compared NPA and MEPS as sources of data on antihyperlycemic
+prescriptions during 2020–2021. Both datasets reported relatively
+similar estimated numbers and percentages for most anithyperglycemic
+prescriptions in the U.S., although there was a large difference in the
+estimated total number of insulins prescribed, driven primarily by the
+large difference in the estimated number of short-acting analog insulin
+prescriptions. Biguanides were the most commonly prescribed medication,
+followed by insulins, as reported by both data sources. Analog insulins
+in both the fast-acting and long-acting categories are the most
+prescribed insulin types. These results are in-line with findings from
+other studies. In one study that used data from MEPS for 2008–2015,
+biguanides were the most commonly prescribed class of antihyperglycemic
+medications overall, accounting for approximately 59% in 2015
 [@raval2020]. A study of ambulatory insulin treatment using data from
 IQVIA's National Disease and Therapeutic Index reported that analog
 insulins were the most common insulin treatment, accounting for 92% of
@@ -644,13 +651,14 @@ number of prescriptions for those with public only insurance was as much
 as 22 percentage points higher, depending on the drug class being
 evaluated, than the corresponding NPA estimate, while the opposite was
 true for those on any private insurance. These estimates may differ
-because NPA may not capture medicines filled through certain pharmacies,
-especially those associated with public health insurance, such as
-Veterans Health Administration pharmacies, or other specialty pharmacies
-[@defever2024; @hill2011]. Another study found that NPA only captured
-59% of those who were uninsured, 67% of those with private insurance,
-and 74% of those on Medicaid who were in the SEER data on patients using
-oral anticancer medications [@tran2020].
+because NPA may not capture medicines filled through pharmacies
+dispensing from hospitals or clinics, especially those associated with
+public health insurance, such as Veterans Health Administration
+pharmacies, or other specialty pharmacies [@defever2024; @hill2011].
+Another study found that NPA only captured 59% of those who were
+uninsured, 67% of those with private insurance, and 74% of those on
+Medicaid who were in the SEER data on patients using oral anticancer
+medications [@tran2020].
 
 Differences between the two data sources may be explained in-part due to
 methodological differences in how the data are collected. Data on
@@ -664,19 +672,33 @@ among different groups, as high health care consumers have been shown to
 underreport prescriptions and respondents with lower literacy are often
 inconsistent in reporting [@ritter2001; @schönfeld2021]. However, other
 studies have shown that inaccuracies in MEPS tend to be consistent
-across different socioeconomic and demographic groups, and have minimal
-impact on the evaluation of behavioral factors that contribute to
-differences in medication usage [@hill2011]. Furthermore, NPA may not
-cover the same population as MEPS or other pharmaceutical data sources.
-An investigation of the representativeness and completeness of the NPA
+across different socioeconomic and demographic groups and therefore have
+minimal impact on the evaluation of behavioral factors that contribute
+to differences in medication usage [@hill2011]. While MEPS does include
+data on the number of fills and quantity dispensed, these data may
+contain imputed values if complete records are missing or were not
+provided, and this may introduce some bias in estimating the total
+number of fills.
+
+The populations covered for NPA and MEPS are not identical. NPA has high
+coverage of retail pharmacies with relatively small variance estimates,
+while MEPS estimates come from a much smaller sample of the
+non-institutionalized population, with correspondingly larger variance
+estimates. However, MEPS medications are reported by all household
+members, so all outpatient dispensing settings should be included. An
+investigation of the representativeness and completeness of the NPA
 database for studying oral anticancer medication found that only 67% of
 cases in the SEER program had matches in the NPA database, and this
 varied by subgroup. In particular, NPA only captured 61% of males, 59%
-of Non-Hispanic Black, and 62% of Hispanic patients in the SEER program
-[@tran2020]. Additionally, the proprietary methods NPA uses to produce
-their estimates are also a potential source for differences between the
-two datasets, but it is not possible to evaluate how these methods may
-result in differences.
+of Non-Hispanic Black patients, and 62% of Hispanic patients in the SEER
+program, although this may be due in part to oral anticancer medication
+prescriptions being filled by specialty pharmacies [@tran2020]. Lastly,
+the proprietary methods NPA uses to produce their estimates are also a
+potential source for differences between the two datasets, but it is not
+possible to evaluate how these methods may result in differences.
+However, differences in the population are more likely to be the primary
+drivers of discrepancies between MEPS and NPA than these proprietary
+methods.
 
 It may be beneficial to consider these data sets together, when
 possible, or to consider which data source may be more suited to the
@@ -688,9 +710,9 @@ disparities in diabetes medication usage. Previous studies have shown
 that racial disparities in diabetes medication prescription and use
 exist, and MEPS can be a valuable tool in tracking these disparities
 [@chehal2023; @bepo2024; @eberly2021]. NPA covers 90% of retail
-pharmacies in the US and may be best for identifying national trends and
-patterns in fills by these pharmacies. Incorporating both datasets may
-help triangulate and validate findings.
+pharmacies in the US and may be better for identifying national trends
+and patterns in fills by these pharmacies. Incorporating both datasets
+may help triangulate and validate findings.
 
 ## Limitations
 
@@ -700,22 +722,26 @@ reporting. Additionally, there has been a steadily declining response
 rate for MEPS over time. In 2008, the response rate was 59.3% and this
 fell to 27.6% in 2020 and fell further to 21.8% in 2021. Although
 non-response can be adjusted for in the design of weights, it is not
-possible to know how non-response has biased the survey. Due to the
-proprietary nature of the NPA database and methodology, it is difficult
-to identify precisely why NPA data differs from MEPS data.
+possible to know how non-response has biased the survey. We assumed that
+all prescriptions reported by NPA were for treatment of diabetes, this
+may not be the case.
 
 # Conclusions
 
-Overall, the estimates of the number and percentage of antihyperglycemic
-medications from both datasets are comparable, with the exception of the
-large difference in number of bolus analog insulin prescriptions. Each
-dataset provides a different set of variables that prescriptions may be
+Overall, the estimated number and percentage of antihyperglycemic
+medications from both NPA and MEPS are comparable, with the exception of
+the large difference in the estimated number of bolus analog insulin
+prescriptions. Large differences between the estimates were also found
+when the estimates were stratified by insurance group. Each dataset
+provides a different set of variables that prescriptions may be
 stratified by, and the use of a particular dataset should match the
 questions being asked. Because MEPS provides socioeconomic demographic
 data, such as race/ethnicity and highest educational attainment, it is
 better suited to addressing questions related to disparities in the
 prescription of antihyperglycemic medications. When possible, using both
-datasets may help to triangulate and validate findings.
+datasets may help to triangulate and validate findings, providing a more
+comprehensive understanding of trends and patterns in antihyperglycemic
+medication use.
 
 # Acknowledgements
 
@@ -743,7 +769,7 @@ tar_load(compare_not_insulins_gt)
 
 ```{r}
 #| label: tbl-insulin
-#| tbl-cap: "Estimates from IQVIA National Prescription Audit and the Medical Expenditure Panel Survey from 2020–2021 for age-adjusted number of prescriptions for different categories of insulin purchased by adults with diabetes in the United States. Hyphens indicate the MEPS value was suppressed, while N/A indicates that that stratifying variable is not available from the data source."
+#| tbl-cap: "Weighted estimates from IQVIA National Prescription Audit and the Medical Expenditure Panel Survey from 2020–2021 for age-adjusted number of prescriptions for different categories of insulin purchased by adults with diabetes in the United States. Hyphens indicate the MEPS value was suppressed, while N/A indicates that that stratifying variable is not available from the data source."
 compare_insulins_gt 
 gtsave(compare_insulins_gt, here::here('manuscript/output/table1.docx'))
 ```
@@ -752,7 +778,7 @@ gtsave(compare_insulins_gt, here::here('manuscript/output/table1.docx'))
 
 ```{r}
 #| label: tbl-not_insulin
-#| tbl-cap: "Estimates from IQVIA National Prescription Audit and the Medical Expenditure Panel Survey from 2020–2021 for age-adjusted number of prescriptions for non-insulin medications used in the management of diabetes purchased by adults with diabetes in the United States. Hyphens indicate the MEPS value was suppressed, while N/A indicates that that stratifying variable is not available from the data source."
+#| tbl-cap: "Weighted estimates from IQVIA National Prescription Audit and the Medical Expenditure Panel Survey from 2020–2021 for age-adjusted number of prescriptions for non-insulin medications used in the management of diabetes purchased by adults with diabetes in the United States. Hyphens indicate the MEPS value was suppressed, while N/A indicates that that stratifying variable is not available from the data source."
 compare_not_insulins_gt 
 gtsave(compare_not_insulins_gt, here::here('manuscript/output/table2.docx'))
 ```
@@ -764,8 +790,8 @@ gtsave(compare_not_insulins_gt, here::here('manuscript/output/table2.docx'))
 
 Figure 1: Comparison of A) percentage of insulin prescriptions that come
 from each type of insulin and B) percentage of all diabetes
-prescriptions that come from each type of medication as reported by NPA
-and MEPS.
+prescriptions that come from each type of medication as estimated from
+NPA and MEPS in the USA, 2020–2021.
 
 ```{r}
 tar_load(meps_iqvia_plots,
@@ -783,8 +809,10 @@ Figure 2: Heatmap showing the percentage point difference between NPA
 and MEPS estimates of the percentage of prescriptions for each type of
 medication out of A) the total number of insulin prescriptions and B)
 the total number of prescriptions for diabetes medications, overall and
-among different stratifying variables. Grey cells indicate that the MEPS
-estimate was suppressed.
+among different stratifying variables in the USA, 2020–2021. Grey cells
+indicate that the MEPS estimate was suppressed. Asterisks denote
+estimates where the 95% confidence interval for the estimated percentage
+from MEPS did not include the estimated percentage from NPA.
 
 ```{r}
 fig2 <- wrapped_heatmap +
