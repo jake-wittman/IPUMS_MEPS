@@ -1796,7 +1796,8 @@ pooledGraphs <- function(data) {
     mutate(insulin_indicator = case_when(str_detect(Prescription, 'Insulin -') ~ 'Insulin',
                                          TRUE ~ 'Not insulin'),
            data = case_when(data == 'IQVIA' ~ 'NPA',
-                            TRUE ~ data))
+                            TRUE ~ data),
+           data = factor(data, levels = c('NPA', 'MEPS')))
 
   insulin_data <- data |>
     filter(insulin_indicator == 'Insulin')
@@ -1875,18 +1876,21 @@ pooledGraphs <- function(data) {
 
 }
 
-prepGTMepsIqvia <- function(data) {
-  data |>
+prepGTMepsIqvia <- function(data, appendix = FALSE) {
+  data <- data |>
     select(data,
            Prescription,
            stratifier,
            group,
            Number,
+           LL, HL,
            total,
            Percent,
            Flags) |>
     mutate(
       Number = formatC(round(Number, digits = -3), format = "d", big.mark = ","),
+      AppendixNumber = case_when(data == 'MEPS' ~ glue::glue("{Number} ({LL}–{HL})"),
+                                 TRUE ~ Number),
       Prescription = case_when(
         str_detect(Prescription, 'Insulin') ~ str_remove_all(Prescription, 'Insulin - '),
         TRUE ~ Prescription
@@ -1924,12 +1928,12 @@ prepGTMepsIqvia <- function(data) {
         'Public only',
         'Any private',
         'Uninsured',
-        '0',
-        '>0-10',
-        '>10-20',
-        '>20-30',
-        '>30-75',
-        '>75',
+        '$0',
+        '>$0-$10',
+        '>$10-$20',
+        '>$20-$30',
+        '>$30-$75',
+        '>$75',
         'Unknown',
         'Asian/not Hispanic',
         'Black/not Hispanic',
@@ -1981,7 +1985,7 @@ prepGTMepsIqvia <- function(data) {
     #        stratifier %nin% c('Education', 'Poverty', 'Race')) |>
     filter(!is.na(Prescription),
            group != 'Unknown') |>
-    select(data, Prescription, Number, Percent, stratifier, group, Flags) |>
+    select(data, Prescription, Number, AppendixNumber, Percent, stratifier, group, Flags) |>
     mutate(Percent = specifyDecimal(Percent, 1),
            Percent = case_when(!is.na(Flags) ~ '-',
                                is.na(Percent) ~ '-',
@@ -1992,9 +1996,11 @@ prepGTMepsIqvia <- function(data) {
                                                                                'Uninsured',
                                                                                'Asian/not Hispanic') ~ '-',
                                Percent == 'NA' ~ 'N/A',
-                               TRUE ~ as.character(Percent)),
-           table_value = case_when(stratifier == 'Overall' ~ Number,
-                                   TRUE ~ as.character(Percent))) |>
+                               TRUE ~ as.character(Percent)))
+  if (appendix == FALSE) {
+  data |>
+      mutate(table_value = case_when(stratifier == 'Overall' ~ Number,
+                                     TRUE ~ as.character(Percent))) |>
     pivot_wider(
       id_cols = c(stratifier, group),
       names_from = c(data, Prescription),
@@ -2003,4 +2009,28 @@ prepGTMepsIqvia <- function(data) {
     arrange(stratifier, group) |>
     mutate(stratifier = case_when(stratifier == 'Overall' ~ 'Overall (n)',
                                   TRUE ~ paste0(stratifier, ' (%)')))
+  } else {
+    data |>
+      mutate(
+             AppendixNumber = case_when(!is.na(Flags) ~ '-',
+                                  is.na(Percent) ~ '-',
+                                  AppendixNumber == 'NA' & data == 'MEPS' & group %in% c('>0-10',
+                                                                                 '>10-20',
+                                                                                 '>20-30',
+                                                                                 '0',
+                                                                                 'Uninsured',
+                                                                                 'Asian/not Hispanic') ~ '-',
+                                 AppendixNumber == 'NA' ~ 'N/A',
+                                 AppendixNumber == 'NA (NA–NA)' ~ 'N/A',
+                                 TRUE ~ as.character(AppendixNumber))) |>
+      mutate(table_value = AppendixNumber) |>
+      pivot_wider(
+        id_cols = c(stratifier, group),
+        names_from = c(data, Prescription),
+        values_from = table_value
+      ) |>
+      arrange(stratifier, group) |>
+      mutate(stratifier = case_when(stratifier == 'Overall' ~ 'Overall (95% CI)',
+                                    TRUE ~ paste0(stratifier, ' (95% CI)')))
+  }
 }

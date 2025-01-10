@@ -2845,8 +2845,12 @@ tar_target(
                                                        'Middle income (200% - 399% of poverty line)',
                                                        'High income (>= 400% of poverty line)',
                                                        'Public only', 'Any private', 'Uninsured',
-                                                       '0', '>0-10', '>10-20', '>20-30',
-                                                       '>30-75', '>75',
+                                                       '$0',
+                                                       '>$0-$10',
+                                                       '>$10-$20',
+                                                       '>$20-$30',
+                                                       '>$30-$75',
+                                                       '>$75',
                                                        'Cardiology',
                                                        'Emergency Med',
                                                        'Endocrinology',
@@ -2956,6 +2960,12 @@ tar_target(
                mutate(group = case_when(group == '3rd party' ~ 'Any private',
                                         group %in% c('Medicaid', 'Medicare Part D') ~ 'Public only',
                                         group == 'Cash' ~ 'Uninsured',
+                                        group == '0' ~ '$0',
+                                        group == ">0-10" ~ '>$0-$10',
+                                        group == ">10-20" ~ ">$10-$20",
+                                        group == ">20-30" ~ ">$20-$30",
+                                        group == ">30-75" ~ '>$30-$75',
+                                        group == ">75" ~ '>$75',
                                         TRUE ~ group)) |>
                group_by(data, Prescription, stratifier, group) |>
                summarise(across(where(is.numeric), ~sum(.x, na.rm = TRUE)),
@@ -2981,7 +2991,9 @@ tar_target(
                     units = 'in')),
 
   tar_target(comparisons_table_prep,
-             prepGTMepsIqvia(meps_iqvia)),
+             prepGTMepsIqvia(meps_iqvia, appendix = FALSE)),
+  tar_target(comparisons_table_appendix_prep,
+             prepGTMepsIqvia(meps_iqvia, appendix = TRUE)),
 
   tar_target(compare_insulins_gt,
            comparisons_table_prep |>
@@ -3017,7 +3029,7 @@ tar_target(
                reverse = TRUE
              )|>
              tab_source_note('- represents data that has been suppressed following the National Center for Health Statistics data presentation
-                              standards, NA cells indicate that data for that group is not available
+                              standards (15), NA cells indicate that data for that group is not available
                              from that data source') |>
              # data_color(
              #   columns = everything(), # or specify specific columns
@@ -3030,9 +3042,11 @@ tar_target(
              #   missing_text = ""
              # )|>
              tab_footnote(locations = cells_stub(rows = group == 'NP/PA'),
-                          footnote = 'Nurse Practitioner/Physicians Assistant') |>
+                          footnote = 'Nurse Practitioner/Physician Assistant') |>
              tab_footnote(locations = cells_stub(rows = group == 'OBGYN'),
                           footnote = 'Obstetrics/Gynecology') |>
+             tab_footnote(footnote = 'Percentages may not sum to 100 due to rounding',
+                          locations = cells_row_groups(contains('%'))) |>
              tab_options(footnotes.marks = c('*', '†', '‡', '§', '||', '¶', '#', '**', '††', '‡‡'))
   ),
 
@@ -3086,7 +3100,7 @@ tar_target(
                 )
               ) |>
               tab_source_note('- represents data that has been suppressed following the National Center for Health Statistics data presentation
-                              standards, NA cells indicate that data for that group is not available
+                              standards (15), NA cells indicate that data for that group is not available
                              from that data source')|>
               # data_color(
               #   columns = everything(), # or specify specific columns
@@ -3099,11 +3113,136 @@ tar_target(
               #   missing_text = ""
               # ) |>
               tab_footnote(locations = cells_stub(rows = group == 'NP/PA'),
-                           footnote = 'Nurse Practitioner/Physicians Assistant') |>
+                           footnote = 'Nurse Practitioner/Physician Assistant') |>
               tab_footnote(locations = cells_stub(rows = group == 'OBGYN'),
                            footnote = 'Obstetrics/Gynecology') |>
+              tab_footnote(footnote = 'Percentages may not sum to 100 due to rounding',
+                           locations = cells_row_groups(contains('%'))) |>
               tab_options(footnotes.marks = c('*', '†', '‡', '§', '||', '¶', '#', '**', '††', '‡‡'))
   ),
+
+
+tar_target(compare_insulins_appendix_gt,
+           comparisons_table_appendix_prep |>
+             mutate(across(everything(), ~if_else(.x == 'N/A', NA, .x))) |>
+             rename_with(~gsub('IQVIA', 'NPA', .x)) |>
+             select(stratifier, group, contains('/'), contains('Pre-mixed'), contains('All')) |>
+             select(-contains('Unknown')) |>
+             gt(
+               rowname_col = 'group',
+               groupname_col = 'stratifier'
+             ) |>
+             tab_style(
+               style = list(
+                 cell_text(align = 'right')
+               ),
+               locations = cells_body(
+                 columns = 2:ncol(comparisons_table_prep |>
+                                    rename_with(~gsub('IQVIA', 'NPA', .x)) |>
+                                    select(stratifier, group, contains('/'), contains('Pre-mixed'), contains('All')) |>
+                                    select(-contains('Unknown')))
+               )
+             ) |>
+             tab_style(
+               style = cell_text(align = 'center'),
+               locations = cells_column_labels(columns = 2:ncol(comparisons_table_prep |>
+                                                                  rename_with(~gsub('IQVIA', 'NPA', .x)) |>
+                                                                  select(stratifier, group, contains('/'), contains('Pre-mixed'), contains('All')) |>
+                                                                  select(-contains('Unknown')))
+               )
+             ) |>
+             tab_spanner_delim(
+               delim = '_',
+               reverse = TRUE
+             )|>
+             tab_source_note('- represents data that has been suppressed following the National Center for Health Statistics data presentation
+                              standards (15), NA cells indicate that data for that group is not available
+                             from that data source') |>
+             # data_color(
+             #   columns = everything(), # or specify specific columns
+             #   na_color = 'grey',
+             #   palette = 'white'
+             # ) %>%
+             # # Replace NA values with an empty string
+             # sub_missing(
+             #   columns = everything(), # or specify specific columns
+             #   missing_text = ""
+             # )|>
+             tab_footnote(locations = cells_stub(rows = group == 'NP/PA'),
+                          footnote = 'Nurse Practitioner/Physician Assistant') |>
+             tab_footnote(locations = cells_stub(rows = group == 'OBGYN'),
+                          footnote = 'Obstetrics/Gynecology') |>
+             tab_options(footnotes.marks = c('*', '†', '‡', '§', '||', '¶', '#', '**', '††', '‡‡'))
+),
+
+tar_target(compare_not_insulins_appendix_gt,
+           comparisons_table_appendix_prep |>
+             mutate(across(everything(), ~if_else(.x == 'N/A', NA, .x))) |>
+             rename_with(~gsub('IQVIA', 'NPA', .x)) |>
+             select(stratifier, group, contains('Biguanides'),
+                    contains('Sulfon'),
+                    contains('TZD'),
+                    contains('DPP'),
+                    contains('GLP'),
+                    contains('SGLT'),
+                    contains('All insulin')) |>
+             gt(
+               rowname_col = 'group',
+               groupname_col = 'stratifier'
+             ) |>
+             tab_spanner_delim(
+               delim = '_',
+               reverse = TRUE
+             ) |>
+             tab_style(
+               style = list(
+                 cell_text(align = 'right')
+               ),
+               locations = cells_body(
+                 columns = 2:ncol( comparisons_table_prep |>
+                                     rename_with(~gsub('IQVIA', 'NPA', .x)) |>
+                                     select(stratifier, group, contains('Biguanides'),
+                                            contains('Sulfon'),
+                                            contains('TZD'),
+                                            contains('DPP'),
+                                            contains('GLP'),
+                                            contains('SGLT'),
+                                            contains('All insulin'))
+                 )
+               )
+             ) |>
+             tab_style(
+               style = cell_text(align = 'center'),
+               locations = cells_column_labels(columns = 2:ncol(comparisons_table_prep |>
+                                                                  rename_with(~gsub('IQVIA', 'NPA', .x)) |>
+                                                                  select(stratifier, group, contains('Biguanides'),
+                                                                         contains('Sulfon'),
+                                                                         contains('TZD'),
+                                                                         contains('DPP'),
+                                                                         contains('GLP'),
+                                                                         contains('SGLT'),
+                                                                         contains('All insulin')))
+               )
+             ) |>
+             tab_source_note('- represents data that has been suppressed following the National Center for Health Statistics data presentation
+                              standards (15), NA cells indicate that data for that group is not available
+                             from that data source')|>
+             # data_color(
+             #   columns = everything(), # or specify specific columns
+             #   na_color = 'grey',
+             #   palette = 'white'
+             # ) %>%
+             # # Replace NA values with an empty string
+             # sub_missing(
+             #   columns = everything(), # or specify specific columns
+             #   missing_text = ""
+             # ) |>
+             tab_footnote(locations = cells_stub(rows = group == 'NP/PA'),
+                          footnote = 'Nurse Practitioner/Physician Assistant') |>
+             tab_footnote(locations = cells_stub(rows = group == 'OBGYN'),
+                          footnote = 'Obstetrics/Gynecology') |>
+             tab_options(footnotes.marks = c('*', '†', '‡', '§', '||', '¶', '#', '**', '††', '‡‡'))
+),
 
   tar_target(save_compare_not_insulins,
             {filepath <- here::here('output/compare_2020_2021_not_insulins_table.docx')
@@ -3120,6 +3259,22 @@ tar_target(
             },
             format = 'file'
   ),
+
+tar_target(save_compare_not_insulins_appendix,
+           {filepath <- here::here('output/compare_2020_2021_not_insulins_table_appendix.docx')
+           gtsave(compare_not_insulins_appendix_gt, filepath)
+           filepath
+           },
+           format = 'file'
+),
+
+tar_target(save_compare_insulins_appendix,
+           {filepath <- here::here('output/compare_2020_2021_insulins_table_appendix.docx')
+           gtsave(compare_insulins_appendix_gt, filepath)
+           filepath
+           },
+           format = 'file'
+),
 
 
 

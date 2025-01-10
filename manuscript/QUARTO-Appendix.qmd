@@ -1,0 +1,56 @@
+---
+title: ""
+format: 
+  docx:
+    page-width: 10
+    reference-doc: template.docx
+editor: source
+bibliography: resources/references.bib
+citation-abbreviations: resources/medline-abbreviations.json
+csl: resources/ama.csl
+execute:
+  echo: false
+  warning: false
+project: 
+  execute-dir: project
+crossref: 
+  fig-title: Fig
+filters:
+  - resources/docx-landscape.lua
+---
+```{r render-for-colleagues, eval = FALSE, include = FALSE}
+#' WHEN READY TO RENDER VERSION FOR SHARING WITH COLLEAGUES USE THIS CODE 
+#' TO APPEND A DATE TO THE OUTPUT
+save <- FALSE
+if (save == TRUE) {
+file_name <- paste0(Sys.Date(),"_draft_NPA-MEPS-appendix.docx")
+
+quarto::quarto_render('manuscript/QUARTO-Appendix.qmd', output_file = file_name)
+
+file.rename(from = here::here(file_name),
+            to = here::here('manuscript', 'output', file_name))
+}
+```
+
+```{r}
+library(targets)
+library(gt)
+tar_load(compare_insulins_appendix_gt)
+tar_load(compare_not_insulins_appendix_gt)
+```
+
+```{r}
+#| label: tbl-insulin
+#| tbl-cap: "Weighted estimates from IQVIA National Prescription Audit and the Medical Expenditure Panel Survey from 2020–2021 for age-adjusted number (95% CI) of prescriptions for different categories of insulin purchased by adults with diabetes in the United States with 95% confidence intervals for MEPS estimates. Hyphens indicate the MEPS value was suppressed, while N/A indicates that that stratifying variable is not available from the data source."
+compare_insulins_appendix_gt 
+gtsave(compare_insulins_appendix_gt, here::here('manuscript/output/tableS1.docx'))
+```
+
+
+```{r}
+#| label: tbl-not_insulin
+#| tbl-cap: "Weighted estimates from IQVIA National Prescription Audit and the Medical Expenditure Panel Survey from 2020–2021 for age-adjusted number (95% CI) of prescriptions for non-insulin medications and all insulins used in the management of diabetes purchased by adults with diabetes in the United States. Hyphens indicate the MEPS value was suppressed, while N/A indicates that that stratifying variable is not available from the data source."
+compare_not_insulins_appendix_gt 
+gtsave(compare_not_insulins_appendix_gt, here::here('manuscript/output/tableS2.docx'))
+```
+
