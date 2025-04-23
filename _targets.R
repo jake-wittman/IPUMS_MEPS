@@ -3028,7 +3028,7 @@ tar_target(
                delim = '_',
                reverse = TRUE
              )|>
-             tab_source_note('- represents data that has been suppressed following the National Center for Health Statistics data presentation
+             tab_source_note('Hyphens represents data that has been suppressed following the National Center for Health Statistics data presentation
                               standards (15), NA cells indicate that data for that group is not available
                              from that data source') |>
              # data_color(
@@ -3099,7 +3099,7 @@ tar_target(
                                                                           contains('All insulin')))
                 )
               ) |>
-              tab_source_note('- represents data that has been suppressed following the National Center for Health Statistics data presentation
+              tab_source_note('Hyphens represents data that has been suppressed following the National Center for Health Statistics data presentation
                               standards (15), NA cells indicate that data for that group is not available
                              from that data source')|>
               # data_color(

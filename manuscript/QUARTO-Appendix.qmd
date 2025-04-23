@@ -41,7 +41,7 @@ tar_load(compare_not_insulins_appendix_gt)
 
 ```{r}
 #| label: tbl-insulin
-#| tbl-cap: "Weighted estimates from IQVIA National Prescription Audit and the Medical Expenditure Panel Survey from 2020–2021 for age-adjusted number (95% CI) of prescriptions for different categories of insulin purchased by adults with diabetes in the United States with 95% confidence intervals for MEPS estimates. Hyphens indicate the MEPS value was suppressed, while N/A indicates that that stratifying variable is not available from the data source."
+#| tbl-cap: "Weighted estimates from IQVIA National Prescription Audit and the Medical Expenditure Panel Survey from 2020–2021 for age-adjusted number (95% CI) of prescriptions for different categories of insulin, adults with diabetes in the United States."
 compare_insulins_appendix_gt 
 gtsave(compare_insulins_appendix_gt, here::here('manuscript/output/tableS1.docx'))
 ```
@@ -49,7 +49,7 @@ gtsave(compare_insulins_appendix_gt, here::here('manuscript/output/tableS1.docx'
 
 ```{r}
 #| label: tbl-not_insulin
-#| tbl-cap: "Weighted estimates from IQVIA National Prescription Audit and the Medical Expenditure Panel Survey from 2020–2021 for age-adjusted number (95% CI) of prescriptions for non-insulin medications and all insulins used in the management of diabetes purchased by adults with diabetes in the United States. Hyphens indicate the MEPS value was suppressed, while N/A indicates that that stratifying variable is not available from the data source."
+#| tbl-cap: "Weighted estimates from IQVIA National Prescription Audit and the Medical Expenditure Panel Survey from 2020–2021 for age-adjusted number (95% CI) of prescriptions for non-insulin medications and all insulins used in the management of diabetes, adults with diabetes in the United States."
 compare_not_insulins_appendix_gt 
 gtsave(compare_not_insulins_appendix_gt, here::here('manuscript/output/tableS2.docx'))
 ```
